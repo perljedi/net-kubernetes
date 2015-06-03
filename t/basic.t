@@ -130,7 +130,7 @@ describe "Net::Kubernetes" => sub {
 		it "returns a new Net::Kubernetes object set to the requested namespace" => sub {
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok"}'));
 			my $res = $kube->get_namespace('myNamespace');
-			isa_ok($res, 'Net::Kubernetes');
+			isa_ok($res, 'Net::Kubernetes::Namespace');
 			is($res->namespace, 'myNamespace');
 			is($res->url, 'http://localhost:8080/api/v1beta3/namespaces/myNamespace');
 		};

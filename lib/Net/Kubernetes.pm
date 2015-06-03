@@ -3,6 +3,7 @@ use Moose;
 use Data::Dumper;
 use MooseX::Aliases;
 require Net::Kubernetes::Resource::Pod;
+require Net::Kubernetes::Namespace;
 require Net::Kubernetes::Resource::ReplicationController;
 require LWP::UserAgent;
 require HTTP::Request;
@@ -23,51 +24,7 @@ Net::Kubernetes
 
 =cut
 
-has url => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 1,
-	default  => 'http://localhost:8080/api/v1beta3',
-);
-
-has password => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 0,
-);
-
-has username => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 0,
-);
-
-has ua => (
-	is       => 'ro',
-	isa      => 'LWP::UserAgent',
-	required => 1,
-	builder  => '_build_lwp_agent',
-);
-
-has namespace => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 0,	
-);
-
-has _namespace_data => (
-	is       => 'ro',
-	isa      => 'HashRef',
-	required => 0,	
-);
-
-has 'json' => (
-    is       => 'ro',
-    isa      => 'JSON',
-    required => 1,
-    lazy     => 1,
-    builder  => '_build_json',
-);
+with 'Net::Kubernetes::Role::APIAccess';
 
 =head1 Methods
 
@@ -156,7 +113,7 @@ sub get_namespace {
 		my(%create_args) = (url => $self->url.'/namespaces/'.$namespace	, namespace=> $namespace, _namespace_data=>$ns);
 		$create_args{username} = $self->username if(defined $self->username);
 		$create_args{password} = $self->password if(defined $self->password);
-		return Net::Kubernetes->new(%create_args);
+		return Net::Kubernetes::Namespace->new(%create_args);
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error getting namespace $namespace:\n".$res->message);
 	}
@@ -170,17 +127,6 @@ sub _build_selector_from_hash {
 	}
 	return \@selectors;
 }
-
-
-sub _build_lwp_agent {
-	my $self = shift;
-	return LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.01');
-}
-
-sub _build_json {
-    return JSON->new->allow_blessed(1)->convert_blessed(1);
-}
-
 
 package Net::Kubernetes::Exception;
 use Moose;
