@@ -43,6 +43,7 @@ describe "Net::Kubernetes" => sub {
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
 			my $res = $kube->list_pods;
 			isa_ok($res, 'ARRAY');
+			isa_ok($res->[0], 'Net::Kubernetes::Resource::Pod');
 		};
 		it "includes label selector in query if labels are passed in" => sub{
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));

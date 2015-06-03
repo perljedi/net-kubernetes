@@ -1,4 +1,4 @@
-package Net::Kubernetes::Pod;
+package Net::Kubernetes::Resource;
 use Moose;
 
 has metadata => (

@@ -19,6 +19,8 @@ version 0.01
 
 =item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
 
+=item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+
 =item $kube->get_namespace("myNamespace");
 
 =back

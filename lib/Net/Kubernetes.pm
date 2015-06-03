@@ -1,14 +1,15 @@
 package Net::Kubernetes;
 use Moose;
 use Data::Dumper;
-require Net::Kubernetes::Pod;
+require Net::Kubernetes::Resource::Pod;
+require Net::Kubernetes::Resource::ReplicationController;
 require LWP::UserAgent;
 require HTTP::Request;
 require JSON;
 require URI;
 require Throwable::Error;
 
-# ABSTRACT: Perl interface to t kubernetes
+# ABSTRACT: Perl interface to kubernetes
 
 =head1 NAME
 
@@ -95,7 +96,39 @@ sub list_pods {
 		my $pod_list = $self->json->decode($res->content);
 		my(@pods)=();
 		foreach my $pod (@{ $pod_list->{items}}){
-			push @pods, Net::Kubernetes::Pod->new(%$pod);
+			push @pods, Net::Kubernetes::Resource::Pod->new(%$pod);
+		}
+		return wantarray ? @pods : \@pods;
+	}else{
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}
+
+=item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+
+=cut
+
+sub list_replication_controllers {
+	my $self = shift;
+	my(%options);
+	if (ref($_[0])) {
+		%options = %{ $_[0] };
+	}else{
+		%options = @_;
+	}
+
+	my $uri = URI->new($self->url.'/replicationcontrollers');
+	my(%form) = ();
+	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
+	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
+	$uri->query_form(%form);
+
+	my $res = $self->ua->request(HTTP::Request->new(GET => $uri));
+	if ($res->is_success) {
+		my $pod_list = $self->json->decode($res->content);
+		my(@pods)=();
+		foreach my $pod (@{ $pod_list->{items}}){
+			push @pods, Net::Kubernetes::Resource::ReplicationController->new($pod);
 		}
 		return wantarray ? @pods : \@pods;
 	}else{
