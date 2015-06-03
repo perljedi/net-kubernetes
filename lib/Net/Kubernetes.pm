@@ -1,6 +1,7 @@
 package Net::Kubernetes;
 use Moose;
 use Data::Dumper;
+use MooseX::Aliases;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require LWP::UserAgent;
@@ -135,6 +136,8 @@ sub list_replication_controllers {
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
 }
+
+alias list_rc => 'list_replication_controllers';
 
 =item $kube->get_namespace("myNamespace");
 

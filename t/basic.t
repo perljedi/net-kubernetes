@@ -60,6 +60,47 @@ describe "Net::Kubernetes" => sub {
 			cmp_deeply([ $req->uri->query_form ], supersetof('fieldSelector'));
 		};
 	};
+	describe "list_rc" => sub {
+		my $kube;
+		before sub {
+			$kube = Net::Kubernetes->new;
+		};
+		it "can get a list of pods" => sub {
+			can_ok($kube, 'list_rc');
+		};
+		it "throws an exception if the call returns an error" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
+			dies_ok {
+				$kube->list_rc;
+			};
+		};
+		it "doesn't throw an exception if the call succeeds" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok"}'));
+			lives_ok {
+				$kube->list_rc;
+			};
+		};
+		it "returns an array of ReplicationControllers" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			my $res = $kube->list_rc;
+			isa_ok($res, 'ARRAY');
+			isa_ok($res->[0], 'Net::Kubernetes::Resource::ReplicationController');
+		};
+		it "includes label selector in query if labels are passed in" => sub{
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$kube->list_rc(labels=>{name=>'my-pod'});
+			$lwpMock->verify('request')->once;
+			my $req = $lwpMock->getCallsTo('request')->[0][1];
+			cmp_deeply([ $req->uri->query_form ], supersetof('labelSelector'));
+		};
+		it "includes field selector in query if fields are passed in" => sub{
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$kube->list_rc(fields=>{'status.phase'=>'Running'});
+			$lwpMock->verify('request')->once;
+			my $req = $lwpMock->getCallsTo('request')->[0][1];
+			cmp_deeply([ $req->uri->query_form ], supersetof('fieldSelector'));
+		};
+	};
 	describe "get_namespace" => sub {
 		my $kube;
 		before sub {
