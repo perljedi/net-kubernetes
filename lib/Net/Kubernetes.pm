@@ -73,7 +73,7 @@ has 'json' => (
 
 =over 1
 
-=item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+=item $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
 =cut
 
@@ -105,7 +105,8 @@ sub list_pods {
 	}
 }
 
-=item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+=item $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+=item $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
 
 =cut
 
