@@ -1,10 +1,12 @@
 package Net::Kubernetes;
 use Moose;
-use LWP::UserAgent;
 use Data::Dumper;
-use HTTP::Request;
-use JSON;
-use URI;
+require Net::Kubernetes::Pod;
+require LWP::UserAgent;
+require HTTP::Request;
+require JSON;
+require URI;
+require Throwable::Error;
 
 # ABSTRACT: Perl interface to t kubernetes
 
@@ -23,7 +25,7 @@ has url => (
 	is       => 'ro',
 	isa      => 'Str',
 	required => 1,
-	default  => 'http://localhost:8080/api/v1beta3'
+	default  => 'http://localhost:8080/api/v1beta3',
 );
 
 has password => (
@@ -42,7 +44,19 @@ has ua => (
 	is       => 'ro',
 	isa      => 'LWP::UserAgent',
 	required => 1,
-	builder  => '_build_lwp_agent'
+	builder  => '_build_lwp_agent',
+);
+
+has namespace => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 0,	
+);
+
+has _namespace_data => (
+	is       => 'ro',
+	isa      => 'HashRef',
+	required => 0,	
 );
 
 has 'json' => (
@@ -73,13 +87,35 @@ sub list_pods {
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
 	$uri->query_form(%form);
-	print "$uri\n";
 
 	my $res = $self->ua->request(HTTP::Request->new(GET => $uri));
 	if ($res->is_success) {
-		return $self->json->decode($res->content);
+		my $pod_list = $self->json->decode($res->content);
+		my(@pods)=();
+		foreach my $pod (@{ $pod_list->{items}}){
+			push @pods, Net::Kubernetes::Pod->new(%$pod);
+		}
+		return wantarray ? @pods : \@pods;
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}
+
+sub get_namespace {
+	my($self, $namespace) = @_;
+	if (! defined $namespace || ! length $namespace) {
+		Throwable::Error->throw(message=>'$namespace cannot be null');
+	}
+	
+	my $res = $self->ua->request(HTTP::Request->new(GET => $self->url.'/namespaces/'.$namespace));
+	if ($res->is_success) {
+		my $ns = $self->json->decode($res->content);
+		my(%create_args) = (url => $self->url.'/namespaces/'.$namespace	, namespace=> $namespace, _namespace_data=>$ns);
+		$create_args{username} = $self->username if(defined $self->username);
+		$create_args{password} = $self->password if(defined $self->password);
+		return Net::Kubernetes->new(%create_args);
+	}else{
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error getting namespace $namespace:\n".$res->message);
 	}
 }
 
@@ -106,18 +142,12 @@ sub _build_json {
 package Net::Kubernetes::Exception;
 use Moose;
 
-with "Throwable";
+extends "Throwable::Error";
 
 
 has code => (
 	is       => 'ro',
 	isa      => 'Num',
-	required => 1,
-);
-
-has message => (
-	is       => 'ro',
-	isa      => 'Str',
 	required => 1,
 );
 
