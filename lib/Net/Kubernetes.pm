@@ -79,7 +79,7 @@ sub list_pods {
 	my $self = shift;
 	my(%options);
 	if (ref($_[0])) {
-		%options = %$_[0];
+		%options = %{ $_[0] };
 	}else{
 		%options = @_;
 	}
