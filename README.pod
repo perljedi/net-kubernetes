@@ -1,0 +1,16 @@
+=pod
+
+=head1 NAME
+
+Net::Kubernetes
+
+=head1 VERSION
+
+version 0.01
+
+=head1 SYNOPSIS
+
+  my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
+  my $pod_list = $kube->list_pods();
+
+=cut

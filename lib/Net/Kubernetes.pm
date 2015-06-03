@@ -5,6 +5,19 @@ use Data::Dumper;
 use HTTP::Request;
 use JSON;
 
+# ABSTRACT: Perl interface to t kubernetes
+
+=head1 NAME
+
+Net::Kubernetes
+
+=head1 SYNOPSIS
+
+  my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
+  my $pod_list = $kube->list_pods();
+
+=cut
+
 has url => (
 	is       => 'ro',
 	isa      => 'Str',
