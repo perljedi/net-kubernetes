@@ -13,4 +13,8 @@ version 0.01
   my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
   my $pod_list = $kube->list_pods();
 
+=head1 Methods
+
+=head2 $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+
 =cut

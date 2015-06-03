@@ -4,6 +4,7 @@ use LWP::UserAgent;
 use Data::Dumper;
 use HTTP::Request;
 use JSON;
+use URI;
 
 # ABSTRACT: Perl interface to t kubernetes
 
@@ -52,15 +53,43 @@ has 'json' => (
     builder  => '_build_json',
 );
 
+=head1 Methods
+
+=head2 $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+
+=cut
 
 sub list_pods {
 	my $self = shift;
-	my $res = $self->ua->request(HTTP::Request->new(GET => $self->url.'/pods'));
+	my(%options);
+	if (ref($_[0])) {
+		%options = %$_[0];
+	}else{
+		%options = @_;
+	}
+
+	my $uri = URI->new($self->url.'/pods');
+	my(%form) = ();
+	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
+	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
+	$uri->query_form(%form);
+	print "$uri\n";
+
+	my $res = $self->ua->request(HTTP::Request->new(GET => $uri));
 	if ($res->is_success) {
 		return $self->json->decode($res->content);
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
+}
+
+sub _build_selector_from_hash {
+	my($self, $select_hash) = @_;
+	my(@selectors);
+	foreach my $label (keys %{ $select_hash }){
+		push @selectors, $label.'='.$select_hash->{$label};
+	}
+	return \@selectors;
 }
 
 
