@@ -69,7 +69,9 @@ has 'json' => (
 
 =head1 Methods
 
-=head2 $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
+=over 1
+
+=item $kube->list_fields([label=>{label=>value}], [fields=>{field=>value}])
 
 =cut
 
@@ -100,6 +102,10 @@ sub list_pods {
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
 }
+
+=item $kube->get_namespace("myNamespace");
+
+=cut
 
 sub get_namespace {
 	my($self, $namespace) = @_;
@@ -152,3 +158,14 @@ has code => (
 );
 
 return 42;
+
+=back
+
+=head1 AUTHOR
+  Dave Mueller <dave@perljedi.com>
+
+=head1 COPYRIGHT AND LICENSE
+This software is copyright (c) 2015 by Dave Mueller.
+
+This is free software; you can redistribute it and/or modify it under the
+same terms as the Perl 5 programming language system itself.
