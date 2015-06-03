@@ -24,9 +24,11 @@ version 0.01
 =back
 
 =head1 AUTHOR
+
   Dave Mueller <dave@perljedi.com>
 
 =head1 COPYRIGHT AND LICENSE
+
 This software is copyright (c) 2015 by Dave Mueller.
 
 This is free software; you can redistribute it and/or modify it under the
