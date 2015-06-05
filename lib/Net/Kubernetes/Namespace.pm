@@ -14,5 +14,7 @@ has _namespace_data => (
 );
 
 with 'Net::Kubernetes::Role::APIAccess';
+with 'Net::Kubernetes::Role::ResourceLister';
+with 'Net::Kubernetes::Role::ResourceCreator';
 
 

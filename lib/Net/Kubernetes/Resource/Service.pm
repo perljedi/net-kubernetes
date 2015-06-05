@@ -1,4 +1,4 @@
-package Net::Kubernetes::Resource::Pod;
+package Net::Kubernetes::Resource::Service;
 use Moose;
 
 extends 'Net::Kubernetes::Resource';

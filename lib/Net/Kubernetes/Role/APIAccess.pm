@@ -4,7 +4,7 @@ require LWP::UserAgent;
 require HTTP::Request;
 require JSON;
 require URI;
-
+use MIME::Base64;
 
 has url => (
 	is       => 'ro',
@@ -43,11 +43,20 @@ has 'json' => (
 
 sub _build_lwp_agent {
 	my $self = shift;
-	return LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.01');
+	my $ua = LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.01');
+	$ua->ssl_opts(verify_hostname=>0);
+	return $ua;
 }
 
 sub _build_json {
     return JSON->new->allow_blessed(1)->convert_blessed(1);
+}
+
+sub create_request {
+	my($self, @options) = @_;
+	my $req = HTTP::Request->new(@options);
+	$req->header(Authorization=>"Basic ".encode_base64($self->username.':'.$self->password));
+	return $req;
 }
 
 
