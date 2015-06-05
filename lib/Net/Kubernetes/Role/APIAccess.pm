@@ -55,7 +55,9 @@ sub _build_json {
 sub create_request {
 	my($self, @options) = @_;
 	my $req = HTTP::Request->new(@options);
-	$req->header(Authorization=>"Basic ".encode_base64($self->username.':'.$self->password));
+	if ($self->username && $self->password) {
+		$req->header(Authorization=>"Basic ".encode_base64($self->username.':'.$self->password));
+	}
 	return $req;
 }
 
