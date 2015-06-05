@@ -1,5 +1,12 @@
 package Net::Kubernetes::Exception;
+
 use Moose;
+
+=head1 NAME
+
+Net::Kubernetes::Exception
+
+=cut
 
 extends "Throwable::Error";
 

@@ -1,5 +1,13 @@
 package Net::Kubernetes::Resource;
+
 use Moose;
+
+=head1 NAME
+
+Net::Kubernetes::Resource
+
+=cut
+
 
 has kind     => (
 	is       => 'ro',

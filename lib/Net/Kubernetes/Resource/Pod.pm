@@ -1,5 +1,12 @@
 package Net::Kubernetes::Resource::Pod;
+
 use Moose;
+
+=head1 NAME
+
+Net::Kubernetes::Resource::Pod
+
+=cut
 
 extends 'Net::Kubernetes::Resource';
 

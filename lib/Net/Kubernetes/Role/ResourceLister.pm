@@ -1,9 +1,17 @@
 package Net::Kubernetes::Role::ResourceLister;
+
 use Moose::Role;
 use MooseX::Aliases;
 require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
+
+
+=head1 NAME
+
+Net::Kubernetes::Role::ResourceLister
+
+=cut
 
 requires 'ua';
 requires 'create_request';

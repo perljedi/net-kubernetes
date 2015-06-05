@@ -1,5 +1,13 @@
 package Net::Kubernetes::Namespace;
+
 use Moose;
+
+=head1 NAME
+
+Net::Kubernetes::Namespace
+
+=cut
+
 
 has namespace => (
 	is       => 'ro',

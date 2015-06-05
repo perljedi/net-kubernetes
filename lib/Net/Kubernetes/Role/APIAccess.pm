@@ -1,10 +1,18 @@
 package Net::Kubernetes::Role::APIAccess;
+
 use Moose::Role;
 require LWP::UserAgent;
 require HTTP::Request;
 require JSON;
 require URI;
 use MIME::Base64;
+
+=head1 NAME
+
+Net::Kubernetes::Role::APIAccess
+
+=cut
+
 
 has url => (
 	is       => 'ro',

@@ -1,4 +1,5 @@
 package Net::Kubernetes::Role::ResourceCreator;
+
 use Moose::Role;
 use MooseX::Aliases;
 require YAML;
@@ -8,6 +9,12 @@ require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
 use Data::Dumper;
+
+=head1 NAME
+
+Net::Kubernetes::Role::ResoruceCreator
+
+=cut
 
 requires 'ua';
 requires 'create_request';

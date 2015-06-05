@@ -1,5 +1,12 @@
 package Net::Kubernetes::Resource::Secret;
+
 use Moose;
+
+=head1 NAME
+
+Net::Kubernetes::Resource::Secret
+
+=cut
 
 extends 'Net::Kubernetes::Resource';
 

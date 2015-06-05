@@ -1,4 +1,5 @@
 package Net::Kubernetes;
+
 use Moose;
 use Data::Dumper;
 require Net::Kubernetes::Namespace;
@@ -20,6 +21,12 @@ Net::Kubernetes
 
   my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
   my $pod_list = $kube->list_pods();
+  
+  my $nginx_pod = $kube->create_from_file('kubernetes/examples/pod.yaml');
+  
+  my $ns = $kube->get_namespace('default');
+  
+  my $services = $ns->list_services;
 
 =cut
 
@@ -29,12 +36,16 @@ with 'Net::Kubernetes::Role::ResourceCreator';
 
 =head1 Methods
 
+By convention, methods will throw exceptions if kubernetes api server returns a non-successful status code.
 
 =head2 List resources
 
-These methods retrieve lists (optionall limited by field or label selector) of the various resources types
+These methods retrieve lists (optionally limited by field or label selector) of the various resources types
 kubernetes makes available via the API servers rest interface. These methods may also be called on a
 "Namespace" object, which will implicitly limit the result set by namespace.
+
+All of these methods will return an array (or and array ref denpending on context) of the approriate
+resource type (Net::Kubernetes::Resource::Pod for example).
 
 =over 1
 
