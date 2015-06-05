@@ -15,14 +15,55 @@ version 0.01
 
 =head1 Methods
 
+
+=head2 List resources
+
+These methods retrieve lists (optionall limited by field or label selector) of the various resources types
+kubernetes makes available via the API servers rest interface. These methods may also be called on a
+"Namespace" object, which will implicitly limit the result set by namespace.
+
 =over 1
 
 =item $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
 =item $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+
 =item $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
 
+=item $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+
+=item $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
+
+=back
+
+=head2 Create Methods
+
+These methods may be called either globally or on a namespace object. The return value is is an object of the
+approriate type (determined by the "Kind" field)
+
+=over 1
+
+=item my $resource = $kube->create({OBJECT})
+
+=item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+
+Create from file is really just a short cut around something like:
+
+  my $object = YAML::LoadFile(PATH_TO_FILE);
+  $kube->create($object);
+
+=back
+
+=head2 Global scoped methods
+
+These methods are only available at the top level (i.e. not available via a namespace object)
+
+=over 1
+
 =item $kube->get_namespace("myNamespace");
+
+This method returns a "Namespace" object on which many methods can be called implicitly
+limited to the specified namespace.
 
 =back
 
