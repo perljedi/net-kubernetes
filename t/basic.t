@@ -40,20 +40,20 @@ describe "Net::Kubernetes" => sub {
 			};
 		};
 		it "returns an array of pods" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			my $res = $kube->list_pods;
 			isa_ok($res, 'ARRAY');
 			isa_ok($res->[0], 'Net::Kubernetes::Resource::Pod');
 		};
 		it "includes label selector in query if labels are passed in" => sub{
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$kube->list_pods(labels=>{name=>'my-pod'});
 			$lwpMock->verify('request')->once;
 			my $req = $lwpMock->getCallsTo('request')->[0][1];
 			cmp_deeply([ $req->uri->query_form ], supersetof('labelSelector'));
 		};
 		it "includes field selector in query if fields are passed in" => sub{
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$kube->list_pods(fields=>{'status.phase'=>'Running'});
 			$lwpMock->verify('request')->once;
 			my $req = $lwpMock->getCallsTo('request')->[0][1];
@@ -81,20 +81,20 @@ describe "Net::Kubernetes" => sub {
 			};
 		};
 		it "returns an array of ReplicationControllers" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			my $res = $kube->list_rc;
 			isa_ok($res, 'ARRAY');
 			isa_ok($res->[0], 'Net::Kubernetes::Resource::ReplicationController');
 		};
 		it "includes label selector in query if labels are passed in" => sub{
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$kube->list_rc(labels=>{name=>'my-pod'});
 			$lwpMock->verify('request')->once;
 			my $req = $lwpMock->getCallsTo('request')->[0][1];
 			cmp_deeply([ $req->uri->query_form ], supersetof('labelSelector'));
 		};
 		it "includes field selector in query if fields are passed in" => sub{
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{}, "status":{}}]}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$kube->list_rc(fields=>{'status.phase'=>'Running'});
 			$lwpMock->verify('request')->once;
 			my $req = $lwpMock->getCallsTo('request')->[0][1];
@@ -110,7 +110,7 @@ describe "Net::Kubernetes" => sub {
 			can_ok($kube, 'get_namespace');
 		};
 		it "throws an exception if namespace is not passed in" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok"}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "metadata":{"selfLink":"/path/to/me"}}'));
 			dies_ok {
 				$kube->get_namespace;
 			};
@@ -122,17 +122,16 @@ describe "Net::Kubernetes" => sub {
 			};
 		};
 		it "doesn't throw an exception if the call succeeds" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok"}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "metadata":{"selfLink":"/path/to/me"}}'));
 			lives_ok {
 				$kube->get_namespace('myNamespace');
 			};
 		};
 		it "returns a new Net::Kubernetes object set to the requested namespace" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok"}'));
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "metadata":{"selfLink":"/path/to/me"}}'));
 			my $res = $kube->get_namespace('myNamespace');
 			isa_ok($res, 'Net::Kubernetes::Namespace');
 			is($res->namespace, 'myNamespace');
-			is($res->url, 'http://localhost:8080/api/v1beta3/namespaces/myNamespace');
 		};
 	};
 };

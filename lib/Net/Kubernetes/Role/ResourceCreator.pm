@@ -29,7 +29,7 @@ sub create_from_file {
 
 sub create {
 	my($self, $object) = @_;
-	my $req = $self->create_request(POST=>$self->url.'/'.lc($object->{kind}).'s', undef, $self->json->encode($object));
+	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $self->json->encode($object));
 	my $res = $self->ua->request($req);
 	if ($res->is_success) {
 		return "Net::Kubernetes::Resource::$object->{kind}"->new($self->json->decode($res->content));

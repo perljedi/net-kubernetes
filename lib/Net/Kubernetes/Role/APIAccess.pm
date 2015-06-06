@@ -18,7 +18,14 @@ has url => (
 	is       => 'ro',
 	isa      => 'Str',
 	required => 1,
-	default  => 'http://localhost:8080/api/v1beta3',
+	default  => 'http://localhost:8080',
+);
+
+has base_path => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 1,
+	default  => 'api/v1beta3',
 );
 
 has password => (
@@ -47,6 +54,11 @@ has 'json' => (
     lazy     => 1,
     builder  => '_build_json',
 );
+
+sub path {
+	my($self) = @_;
+	return $self->url.'/'.$self->base_path;
+}
 
 
 sub _build_lwp_agent {

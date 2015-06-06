@@ -97,11 +97,12 @@ sub get_namespace {
 	if (! defined $namespace || ! length $namespace) {
 		Throwable::Error->throw(message=>'$namespace cannot be null');
 	}
-	
-	my $res = $self->ua->request($self->create_request(GET => $self->url.'/namespaces/'.$namespace));
+	print "Getting from ".$self->path.'/namespaces/'.$namespace."\n";
+	my $res = $self->ua->request($self->create_request(GET => $self->path.'/namespaces/'.$namespace));
 	if ($res->is_success) {
 		my $ns = $self->json->decode($res->content);
-		my(%create_args) = (url => $self->url.'/namespaces/'.$namespace	, namespace=> $namespace, _namespace_data=>$ns);
+		print Dumper($ns)."\n";
+		my(%create_args) = (url => $self->url, base_path=>$ns->{metadata}{selfLink}, namespace=> $namespace, _namespace_data=>$ns);
 		$create_args{username} = $self->username if(defined $self->username);
 		$create_args{password} = $self->password if(defined $self->password);
 		return Net::Kubernetes::Namespace->new(%create_args);

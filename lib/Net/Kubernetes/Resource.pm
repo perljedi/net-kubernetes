@@ -8,6 +8,8 @@ Net::Kubernetes::Resource
 
 =cut
 
+with 'Net::Kubernetes::Role::APIAccess';
+
 
 has kind     => (
 	is       => 'ro',

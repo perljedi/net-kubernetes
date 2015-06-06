@@ -5,13 +5,15 @@ use MooseX::Aliases;
 require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
-
+use Data::Dumper;
 
 =head1 NAME
 
 Net::Kubernetes::Role::ResourceLister
 
 =cut
+
+with 'Net::Kubernetes::Role::ResourceFactory';
 
 requires 'ua';
 requires 'create_request';
@@ -27,7 +29,7 @@ sub list_pods {
 		%options = @_;
 	}
 
-	my $uri = URI->new($self->url.'/pods');
+	my $uri = URI->new($self->path.'/pods');
 	my(%form) = ();
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
@@ -38,7 +40,7 @@ sub list_pods {
 		my $pod_list = $self->json->decode($res->content);
 		my(@pods)=();
 		foreach my $pod (@{ $pod_list->{items}}){
-			push @pods, Net::Kubernetes::Resource::Pod->new(%$pod);
+			push @pods, $self->create_resource_object($pod, 'Pod');
 		}
 		return wantarray ? @pods : \@pods;
 	}else{
@@ -55,7 +57,7 @@ sub list_replication_controllers {
 		%options = @_;
 	}
 
-	my $uri = URI->new($self->url.'/replicationcontrollers');
+	my $uri = URI->new($self->path.'/replicationcontrollers');
 	my(%form) = ();
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
@@ -66,7 +68,7 @@ sub list_replication_controllers {
 		my $pod_list = $self->json->decode($res->content);
 		my(@rcs)=();
 		foreach my $rc (@{ $pod_list->{items}}){
-			push @rcs, Net::Kubernetes::Resource::ReplicationController->new($rc);
+			push @rcs, $self->create_resource_object($rc, 'ReplicationController');;
 		}
 		return wantarray ? @rcs : \@rcs;
 	}else{
@@ -85,7 +87,7 @@ sub list_services {
 		%options = @_;
 	}
 
-	my $uri = URI->new($self->url.'/services');
+	my $uri = URI->new($self->path.'/services');
 	my(%form) = ();
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
@@ -96,7 +98,7 @@ sub list_services {
 		my $pod_list = $self->json->decode($res->content);
 		my(@services)=();
 		foreach my $service (@{ $pod_list->{items}}){
-			push @services, Net::Kubernetes::Resource::Service->new($service);
+			push @services, $self->create_resource_object($service, 'Service');
 		}
 		return wantarray ? @services : \@services;
 	}else{
@@ -113,7 +115,7 @@ sub list_secrets {
 		%options = @_;
 	}
 
-	my $uri = URI->new($self->url.'/secrets');
+	my $uri = URI->new($self->path.'/secrets');
 	my(%form) = ();
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
@@ -124,7 +126,7 @@ sub list_secrets {
 		my $pod_list = $self->json->decode($res->content);
 		my(@secrets)=();
 		foreach my $secret (@{ $pod_list->{items}}){
-			push @secrets, Net::Kubernetes::Resource::Secret->new($secret);
+			push @secrets, $self->create_resource_object($secret, 'Secret');
 		}
 		return wantarray ? @secrets : \@secrets;
 	}else{
