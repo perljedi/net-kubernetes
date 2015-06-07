@@ -128,7 +128,12 @@ These methods can be called directly on a resource object.
 
 =over 1
 
-=item $resource->deltete
+=item $resource->delete
+
+=item $resource->refresh
+
+This method is only available for resources which have a status (currently everything
+other than secretes).
 
 =cut
 
