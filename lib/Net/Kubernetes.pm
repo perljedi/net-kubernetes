@@ -34,7 +34,15 @@ Net::Kubernetes
   
   my $other_pod = $ns->create_from_file('./my-pod.yaml');
 
+=head1 Description
+
+This package allows programatic access to the L<Kubernetes|http://kubernetes.io> rest api.
+
+Please note this package is still a BETA release (as is kubernetes itself), and the methods
+and API are still subject to change.  Use at your own risk.
+
 =cut
+
 
 with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
