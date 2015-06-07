@@ -2,4 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Fixed typo in documentation
+ - Removed debug code from delete method
+ - Added refresh method for statefull resources.
+
 0.01 Sat Jun 06 2015
