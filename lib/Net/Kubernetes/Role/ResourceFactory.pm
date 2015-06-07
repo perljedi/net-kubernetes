@@ -7,9 +7,15 @@ require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 
+=head1 NAME
+
+Net::Kubernetes::Role::ResoruceFactory
+
+=cut
+
 sub create_resource_object {
 	my($self, $object, $kind) = @_;
-	$kind ||= $object->{Kind};
+	$kind ||= $object->{kind};
 	my(%create_args) = %$object;
 	$create_args{username} = $self->username if($self->username);
 	$create_args{password} = $self->password if($self->password);

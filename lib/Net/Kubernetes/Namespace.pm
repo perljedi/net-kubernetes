@@ -1,6 +1,7 @@
 package Net::Kubernetes::Namespace;
 
 use Moose;
+use MooseX::Aliases;
 
 =head1 NAME
 
@@ -24,5 +25,40 @@ has _namespace_data => (
 with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
 with 'Net::Kubernetes::Role::ResourceCreator';
+with 'Net::Kubernetes::Role::ResourceFactory';
+
+sub get_secret {
+	my($self, $name) = @_;
+	return $self->get_resource_by_name($name, 'secrets');
+}
+
+sub get_pod {
+	my($self, $name) = @_;
+	return $self->get_resource_by_name($name, 'pods');
+}
+
+sub get_service {
+	my($self, $name) = @_;
+	return $self->get_resource_by_name($name, 'services');
+}
+
+sub get_replication_controller {
+	my($self, $name) = @_;
+	return $self->get_resource_by_name($name, 'replicationcontrollers');
+}
+alias get_rc => 'get_replication_controller';
 
 
+sub get_resource_by_name {
+	my($self, $name, $type) = @_;
+	my($res) = $self->ua->request($self->create_request(GET => $self->url.'/'.$self->base_path.'/'.$type.'/'.$name));
+	print Dumper($res)."\n";
+	if ($res->is_success) {
+		use Data::Dumper;
+		print Dumper($self->json->decode($res->content))."\n";
+		return $self->create_resource_object($self->json->decode($res->content));
+	}
+	else {
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}

@@ -29,4 +29,11 @@ has metadata => (
 	required => 1
 );
 
+sub delete {
+	my($self) = @_;
+	my($res) = $self->ua->request($self->create_request(DELETE => $self->url.'/'.$self->base_path));
+	use Data::Dumper;
+	print Dumper($res)."\n";
+}
+
 return 42;

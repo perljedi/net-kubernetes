@@ -9,6 +9,7 @@ require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
 use Data::Dumper;
+use File::Slurp;
 
 =head1 NAME
 
@@ -23,7 +24,18 @@ requires 'json';
 
 sub create_from_file {
 	my($self, $file) = @_;
-	my $object = YAML::LoadFile($file);
+	if (! -f $file) {
+		Throwable::Error->throw(message=>"Could not read file: $file");
+	}
+	
+	my $object;
+	if ($file =~ /\.ya?ml$/i){
+		$object = YAML::LoadFile($file);
+	}
+	else{
+		$object = $self->json->decode(read_file($file));
+	}
+	
 	return $self->create($object);
 }
 

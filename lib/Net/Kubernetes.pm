@@ -27,6 +27,12 @@ Net::Kubernetes
   my $ns = $kube->get_namespace('default');
   
   my $services = $ns->list_services;
+  
+  my $pod = $ns->get_pod('my-pod');
+  
+  $pod->delete;
+  
+  my $other_pod = $ns->create_from_file('./my-pod.yaml');
 
 =cut
 
@@ -89,6 +95,32 @@ These methods are only available at the top level (i.e. not available via a name
 
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
+
+=back
+
+=head2 Namespace methods
+
+These methods are accessible only from a name-space object.
+
+=over 1
+
+=item $ns->get_pod('my-pod-name')
+
+=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
+
+=item $ns->get_service('my-servce-name')
+
+=item $ns->get_secret('my-secret-name')
+
+=back
+
+=head2 Resource Methods
+
+These methods can be called directly on a resource object.
+
+=over 1
+
+=item $resource->deltete
 
 =cut
 
