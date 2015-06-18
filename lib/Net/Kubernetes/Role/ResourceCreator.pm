@@ -17,6 +17,8 @@ Net::Kubernetes::Role::ResoruceCreator
 
 =cut
 
+with 'Net::Kubernetes::Role::ResourceFactory';
+
 requires 'ua';
 requires 'create_request';
 requires 'json';
@@ -44,7 +46,7 @@ sub create {
 	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $self->json->encode($object));
 	my $res = $self->ua->request($req);
 	if ($res->is_success) {
-		return "Net::Kubernetes::Resource::$object->{kind}"->new($self->json->decode($res->content));
+		return $self->create_resource_object($self->json->decode($res->content));
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error creating resource:\n".$res->message);
 	}

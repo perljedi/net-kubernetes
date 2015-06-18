@@ -52,7 +52,6 @@ alias get_rc => 'get_replication_controller';
 sub get_resource_by_name {
 	my($self, $name, $type) = @_;
 	my($res) = $self->ua->request($self->create_request(GET => $self->url.'/'.$self->base_path.'/'.$type.'/'.$name));
-	print Dumper($res)."\n";
 	if ($res->is_success) {
 		use Data::Dumper;
 		print Dumper($self->json->decode($res->content))."\n";

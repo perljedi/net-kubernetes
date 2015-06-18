@@ -51,6 +51,7 @@ with 'Net::Kubernetes::Role::ResourceCreator';
 =head1 Methods
 
 By convention, methods will throw exceptions if kubernetes api server returns a non-successful status code.
+Unless otherwise noted, assume this behavoir through out.
 
 =head2 List resources
 
