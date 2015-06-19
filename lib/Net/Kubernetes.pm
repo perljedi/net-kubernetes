@@ -87,6 +87,8 @@ to a file handle (from which to read the token).
 
 =back
 
+=back
+
 =head2 List resources
 
 These methods retrieve lists (optionally limited by field or label selector) of the various resources types
