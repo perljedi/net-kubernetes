@@ -2,6 +2,16 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - New authentication option: "Token"
+      provide a token to use when authentication to the kubernetes apiserver
+      may be provided as a string, path to a file, or a ref to a file handle
+    
+ - Resource method "update"
+      Any reosurce object may be modified (using the provided attributes).
+      after making changes, call $resource->update; to send those changes
+      to the api server to store.
+
+
 0.02 Sun Jun 07 2015
 
  - Fixed typo in documentation
