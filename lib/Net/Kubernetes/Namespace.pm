@@ -19,7 +19,7 @@ has namespace => (
 has _namespace_data => (
 	is       => 'ro',
 	isa      => 'HashRef',
-	required => 0,	
+	required => 0,
 );
 
 with 'Net::Kubernetes::Role::APIAccess';
@@ -53,8 +53,6 @@ sub get_resource_by_name {
 	my($self, $name, $type) = @_;
 	my($res) = $self->ua->request($self->create_request(GET => $self->url.'/'.$self->base_path.'/'.$type.'/'.$name));
 	if ($res->is_success) {
-		use Data::Dumper;
-		print Dumper($self->json->decode($res->content))."\n";
 		return $self->create_resource_object($self->json->decode($res->content));
 	}
 	else {

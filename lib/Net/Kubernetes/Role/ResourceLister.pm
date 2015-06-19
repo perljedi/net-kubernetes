@@ -40,6 +40,7 @@ sub list_pods {
 		my $pod_list = $self->json->decode($res->content);
 		my(@pods)=();
 		foreach my $pod (@{ $pod_list->{items}}){
+			$pod->{apiVersion} = $pod_list->{apiVersion};
 			push @pods, $self->create_resource_object($pod, 'Pod');
 		}
 		return wantarray ? @pods : \@pods;
@@ -68,6 +69,7 @@ sub list_replication_controllers {
 		my $pod_list = $self->json->decode($res->content);
 		my(@rcs)=();
 		foreach my $rc (@{ $pod_list->{items}}){
+			$rc->{apiVersion} = $pod_list->{apiVersion};
 			push @rcs, $self->create_resource_object($rc, 'ReplicationController');;
 		}
 		return wantarray ? @rcs : \@rcs;
@@ -98,6 +100,7 @@ sub list_services {
 		my $pod_list = $self->json->decode($res->content);
 		my(@services)=();
 		foreach my $service (@{ $pod_list->{items}}){
+			$service->{apiVersion} = $pod_list->{apiVersion};
 			push @services, $self->create_resource_object($service, 'Service');
 		}
 		return wantarray ? @services : \@services;
@@ -126,6 +129,7 @@ sub list_secrets {
 		my $pod_list = $self->json->decode($res->content);
 		my(@secrets)=();
 		foreach my $secret (@{ $pod_list->{items}}){
+			$secret->{apiVersion} = $pod_list->{apiVersion};
 			push @secrets, $self->create_resource_object($secret, 'Secret');
 		}
 		return wantarray ? @secrets : \@secrets;

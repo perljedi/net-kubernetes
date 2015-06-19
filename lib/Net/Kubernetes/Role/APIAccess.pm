@@ -47,6 +47,12 @@ has ua => (
 	builder  => '_build_lwp_agent',
 );
 
+has token => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 0
+);
+
 has 'json' => (
     is       => 'ro',
     isa      => 'JSON',
@@ -55,11 +61,24 @@ has 'json' => (
     builder  => '_build_json',
 );
 
+around BUILDARGS => sub {
+	my $orig = shift;
+	my $class = shift;
+	my(%input) = @_;
+	if(ref($input{token}) && $input{token}->can('getlines')){
+		$input{token} = join('', $input{token}->getlines);
+	}elsif (exists $input{token} && -f $input{token}) {
+		open(my $fh, '<', $input{token});
+		$input{token} = do{ local $/; <$fh>};
+		close($fh);
+	}
+	return $class->$orig(%input);
+};
+
 sub path {
 	my($self) = @_;
 	return $self->url.'/'.$self->base_path;
 }
-
 
 sub _build_lwp_agent {
 	my $self = shift;
@@ -77,6 +96,9 @@ sub create_request {
 	my $req = HTTP::Request->new(@options);
 	if ($self->username && $self->password) {
 		$req->header(Authorization=>"Basic ".encode_base64($self->username.':'.$self->password));
+	}
+	elsif($self->token){
+		$req->header(Authorization=>"Bearer ".$self->token);
 	}
 	return $req;
 }
