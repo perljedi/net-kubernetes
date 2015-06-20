@@ -65,8 +65,13 @@ around BUILDARGS => sub {
 	my $orig = shift;
 	my $class = shift;
 	my(%input) = @_;
-	if(ref($input{token}) && $input{token}->can('getlines')){
-		$input{token} = join('', $input{token}->getlines);
+	if(ref($input{token})){
+		if($input{token}->can('getlines')){
+			$input{token} = join('', $input{token}->getlines);
+		}
+		elsif (ref($input{token}) eq 'GLOB') {
+			$input{token} = do{ local $/; <$input{file}>};
+		}
 	}elsif (exists $input{token} && -f $input{token}) {
 		open(my $fh, '<', $input{token});
 		$input{token} = do{ local $/; <$fh>};
