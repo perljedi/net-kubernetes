@@ -70,7 +70,8 @@ around BUILDARGS => sub {
 			$input{token} = join('', $input{token}->getlines);
 		}
 		elsif (ref($input{token}) eq 'GLOB') {
-			$input{token} = do{ local $/; <$input{file}>};
+			my $fh = $input{token};
+			$input{token} = do{ local $/; <$fh>};
 		}
 	}elsif (exists $input{token} && -f $input{token}) {
 		open(my $fh, '<', $input{token});
