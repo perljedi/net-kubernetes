@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Fix bug reading token in perl 5.18 reported by cpan testers
+
+ - Fix a bug in reading json from disk in create_from_file
+
 0.03 Fri Jun 19 2015
 
  - New authentication option: "Token"
