@@ -35,7 +35,7 @@ sub create_from_file {
 		$object = YAML::LoadFile($file);
 	}
 	else{
-		$object = $self->json->decode(read_file($file));
+		$object = $self->json->decode(scalar(read_file($file)));
 	}
 	
 	return $self->create($object);
@@ -50,7 +50,6 @@ sub create {
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error creating resource:\n".$res->message);
 	}
-	
 }
 
 
