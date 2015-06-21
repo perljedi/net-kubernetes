@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.05 Sun Jun 21 2015
+
  - Apparently cpan thinks 0.04.1 is less than 0.04
 
 0.04.1 Sun Jun 21 2015
