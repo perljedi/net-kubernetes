@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Fix bug causing resource and namespace urls to get a double /
+
 0.04 Sat Jun 20 2015
 
  - Fix bug reading token in perl 5.18 reported by cpan testers

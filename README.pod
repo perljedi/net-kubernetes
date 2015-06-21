@@ -6,7 +6,7 @@ Net::Kubernetes
 
 =head1 VERSION
 
-version 0.04
+version 0.04.1
 
 =head1 SYNOPSIS
 
