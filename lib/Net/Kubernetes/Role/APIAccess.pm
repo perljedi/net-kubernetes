@@ -25,7 +25,7 @@ has base_path => (
 	is       => 'ro',
 	isa      => 'Str',
 	required => 1,
-	default  => 'api/v1beta3',
+	default  => '/api/v1beta3',
 );
 
 has password => (
@@ -83,7 +83,7 @@ around BUILDARGS => sub {
 
 sub path {
 	my($self) = @_;
-	return $self->url.'/'.$self->base_path;
+	return $self->url.$self->base_path;
 }
 
 sub _build_lwp_agent {
