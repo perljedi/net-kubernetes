@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.06 Tue Jun 23 2015
+
  - Added a dzil plugin to handle making meta.yaml
 
  - Added an abstract in the main module to clear
