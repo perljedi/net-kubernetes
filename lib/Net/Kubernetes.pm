@@ -17,6 +17,8 @@ require Net::Kubernetes::Exception;
 
 Net::Kubernetes
 
+This package provides an object oriented interface to the REST API's provided by kubernetes.
+
 =head1 SYNOPSIS
 
   my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
@@ -181,11 +183,9 @@ sub get_namespace {
 	if (! defined $namespace || ! length $namespace) {
 		Throwable::Error->throw(message=>'$namespace cannot be null');
 	}
-	print "Getting from ".$self->path.'/namespaces/'.$namespace."\n";
 	my $res = $self->ua->request($self->create_request(GET => $self->path.'/namespaces/'.$namespace));
 	if ($res->is_success) {
 		my $ns = $self->json->decode($res->content);
-		print Dumper($ns)."\n";
 		my(%create_args) = (url => $self->url, base_path=>$ns->{metadata}{selfLink}, namespace=> $namespace, _namespace_data=>$ns);
 		$create_args{username} = $self->username if(defined $self->username);
 		$create_args{password} = $self->password if(defined $self->password);

@@ -3,7 +3,7 @@ package Net::Kubernetes::Role::APIAccess;
 use Moose::Role;
 require LWP::UserAgent;
 require HTTP::Request;
-require JSON;
+require Cpanel::JSON::XS;
 require URI;
 use MIME::Base64;
 
@@ -55,7 +55,7 @@ has token => (
 
 has 'json' => (
     is       => 'ro',
-    isa      => 'JSON',
+    isa      => 'Cpanel::JSON::XS',
     required => 1,
     lazy     => 1,
     builder  => '_build_json',
@@ -94,7 +94,7 @@ sub _build_lwp_agent {
 }
 
 sub _build_json {
-    return JSON->new->allow_blessed(1)->convert_blessed(1);
+    return Cpanel::JSON::XS->new->allow_blessed(1)->convert_blessed(1);
 }
 
 sub create_request {

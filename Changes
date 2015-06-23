@@ -2,6 +2,19 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Added a dzil plugin to handle making meta.yaml
+
+ - Added an abstract in the main module to clear
+   cpants kwalitee check
+
+ - Switched to use Cpanel::JSON::XS for stability
+
+ - Swtich to YAML::XS which appears to have better
+   handling for numbers read from a yaml file.
+
+ - Temporary fix for conversion problems
+   between YAML and JSON in resource creator.
+
 0.05 Sun Jun 21 2015
 
  - Apparently cpan thinks 0.04.1 is less than 0.04

@@ -2,18 +2,17 @@ package Net::Kubernetes::Role::ResourceCreator;
 
 use Moose::Role;
 use MooseX::Aliases;
-require YAML;
+require YAML::XS;
 require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
-use Data::Dumper;
 use File::Slurp;
 
 =head1 NAME
 
-Net::Kubernetes::Role::ResoruceCreator
+Net::Kubernetes::Role::ResoruceCreator - Internal role applied to a few objects
 
 =cut
 
@@ -32,7 +31,7 @@ sub create_from_file {
 	
 	my $object;
 	if ($file =~ /\.ya?ml$/i){
-		$object = YAML::LoadFile($file);
+		$object = YAML::XS::LoadFile($file);
 	}
 	else{
 		$object = $self->json->decode(scalar(read_file($file)));
@@ -43,7 +42,20 @@ sub create_from_file {
 
 sub create {
 	my($self, $object) = @_;
-	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $self->json->encode($object));
+	
+	# This is an ugly hack and I am not proud of it.
+	# That being said, I have bigger fish to fry right now
+	# This is here because kubernetes will not accept "true"
+	# and "false".
+	# The other problem is that YAML will read a a boolean
+	# value as 1 or 0 which json does not switch back to
+	# true or false. This is not JSON's fault, but I'm not
+	# sure just now how I want to solve it.
+	my $content = $self->json->encode($object);
+	$content =~ s/(["'])(true|false)\1/$2/g;
+	# /EndHack
+	
+	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $content);
 	my $res = $self->ua->request($req);
 	if ($res->is_success) {
 		return $self->create_resource_object($self->json->decode($res->content));
