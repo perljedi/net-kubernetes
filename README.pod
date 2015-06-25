@@ -6,7 +6,7 @@ Net::Kubernetes
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 This package provides an object oriented interface to the REST API's provided by kubernetes.
 

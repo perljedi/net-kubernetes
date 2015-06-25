@@ -2,7 +2,12 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
-0.07 Tue Jun 23 2015
+ - Added new method to resource controller to fetch its pods
+ 
+ - Added test cases, refactored some tests to re-use code
+ 
+ - Removed references to Data::Dumper that were only sued
+   for debugging.
 
 0.06 Tue Jun 23 2015
 
