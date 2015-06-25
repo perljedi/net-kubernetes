@@ -1,10 +1,8 @@
 use strict;
 use warnings;
 use Test::Spec;
-use Data::Dumper;
 use HTTP::Request;
 use HTTP::Response;
-use JSON;
 use Test::Deep;
 use Test::Fatal qw(lives_ok dies_ok);
 use Net::Kubernetes;

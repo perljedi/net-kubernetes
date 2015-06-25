@@ -44,7 +44,6 @@ sub update {
 	if ($res->is_success) {
 		return 1;
 	}
-	use Data::Dumper;
 	print Dumper($res)."\n";
 	return 0;
 }

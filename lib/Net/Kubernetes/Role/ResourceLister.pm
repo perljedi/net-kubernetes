@@ -5,7 +5,6 @@ use MooseX::Aliases;
 require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
-use Data::Dumper;
 
 =head1 NAME
 

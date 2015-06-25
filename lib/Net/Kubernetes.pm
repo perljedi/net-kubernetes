@@ -1,11 +1,9 @@
 package Net::Kubernetes;
 
 use Moose;
-use Data::Dumper;
 require Net::Kubernetes::Namespace;
 require LWP::UserAgent;
 require HTTP::Request;
-require JSON;
 require URI;;
 require Throwable::Error;
 use MIME::Base64;
