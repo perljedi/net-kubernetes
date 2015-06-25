@@ -31,7 +31,7 @@ has metadata => (
 
 sub delete {
 	my($self) = @_;
-	my($res) = $self->ua->request($self->create_request(DELETE => $self->url.'/'.$self->base_path));
+	my($res) = $self->ua->request($self->create_request(DELETE => $self->path));
 	if ($res->is_success) {
 		return 1;
 	}
@@ -40,7 +40,7 @@ sub delete {
 
 sub update {
 	my($self) = @_;
-	my($res) = $self->ua->request($self->create_request(PUT => $self->url.'/'.$self->base_path, undef, $self->json->encode({spec=>$self->spec, apiVersion=>$self->api_version, kind=>$self->kind, metadata=>$self->metadata})));
+	my($res) = $self->ua->request($self->create_request(PUT => $self->path, undef, $self->json->encode({spec=>$self->spec, apiVersion=>$self->api_version, kind=>$self->kind, metadata=>$self->metadata})));
 	if ($res->is_success) {
 		return 1;
 	}

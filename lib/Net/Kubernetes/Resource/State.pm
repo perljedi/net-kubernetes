@@ -17,7 +17,7 @@ has status => (
 
 sub refresh {
 	my($self) = @_;
-	my($res) = $self->ua->request($self->create_request(GET => $self->url.'/'.$self->base_path));
+	my($res) = $self->ua->request($self->create_request(GET => $self->path));
 	if ($res->is_success) {
 		my($data) = $self->json->decode($res->content);
 		$self->status($data->{status});

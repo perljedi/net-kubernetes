@@ -51,7 +51,7 @@ alias get_rc => 'get_replication_controller';
 
 sub get_resource_by_name {
 	my($self, $name, $type) = @_;
-	my($res) = $self->ua->request($self->create_request(GET => $self->url.'/'.$self->base_path.'/'.$type.'/'.$name));
+	my($res) = $self->ua->request($self->create_request(GET => $self->path.'/'.$type.'/'.$name));
 	if ($res->is_success) {
 		return $self->create_resource_object($self->json->decode($res->content));
 	}
