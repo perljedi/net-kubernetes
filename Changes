@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.08 Thu Jun 25 2015
+
  - Added new method to resource controller to fetch its pods
  
  - Added test cases, refactored some tests to re-use code
