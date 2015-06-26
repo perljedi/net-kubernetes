@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.09 Fri Jun 26 2015
+
  - Standardize url construction (which also fixes a few bugs)
 
  - Minor resource role refactor for clarity
