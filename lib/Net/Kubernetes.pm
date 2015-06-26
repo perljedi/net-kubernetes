@@ -144,8 +144,7 @@ return 42;
 
 =head1 See Also
 
-L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>, L<Net::Kubernetes::Resource::Pod>, L<Net::Kubernetes::Resource::ReplicationController>,
-L<Net::Kubernetes::Resource::Service>, L<Net::Kubernetes::Resource::Secret>
+L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>
 
 =head1 AUTHOR
 

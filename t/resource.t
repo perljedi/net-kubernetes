@@ -59,6 +59,24 @@ shared_examples_for "Stateful Resources" => sub {
 	};
 };
 
+shared_examples_for "Pod Container" => sub {
+	it "can get a list of pods" => sub {
+		can_ok($sut, 'get_pods');
+	};
+	it "makes a get request" => sub {
+		$sut->get_pods();
+		my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+		isa_ok($call->[1], 'HTTP::Request');
+		is($call->[1]->method, 'GET');			
+	};
+	it "Requests relative to its 'selfLink'" => sub {
+		$sut->get_pods();
+		my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+		isa_ok($call->[1], 'HTTP::Request');
+		like($call->[1]->uri, qr{/api/v1beta3/namespaces/default/pods});
+	};
+};
+
 describe "Net::Kubernetes - All Resource Objects" => sub {
 	before all => sub {
 		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
@@ -87,28 +105,12 @@ describe "Net::Kubernetes - Replication Controller Objects " => sub {
 	
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
+	it_should_behave_like "Pod Container";
 	
 	it "has a spec" => sub {
 		ok($sut->spec);
 	};
 	
-	describe "Get Pods" => sub {
-		it "can get a list of pods" => sub {
-			can_ok($sut, 'get_pods');
-		};
-		it "makes a get request" => sub {
-			$sut->get_pods();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'GET');			
-		};
-		it "Requests relative to its 'selfLink'" => sub {
-			$sut->get_pods();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			like($call->[1]->uri, qr{/api/v1beta3/namespaces/default/pods});
-		};
-	};
 };
 
 describe "Net::Kubernetes - Pod Objects " => sub {
@@ -166,6 +168,7 @@ describe "Net::Kubernetes - Service Objects " => sub {
 	
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
+	it_should_behave_like "Pod Container";
 };
 
 runtests;

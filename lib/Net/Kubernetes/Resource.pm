@@ -77,5 +77,11 @@ sub as_hashref
 	};
 }
 
+=head1 See Also
+
+L<Net::Kubernetes::Resource::ReplicationController>, L<Net::Kubernetes::Resource::Service>
+
+=cut
+
 
 return 42;

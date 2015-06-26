@@ -10,6 +10,10 @@ Revision history for {{$dist->name}}
 
  - Adding travis-ci build status image to POD
 
+ - Added "get_pods" method to Service Resource
+
+ - Refactor docs to a more sane layout.
+
 0.08 Thu Jun 25 2015
 
  - Added new method to resource controller to fetch its pods
