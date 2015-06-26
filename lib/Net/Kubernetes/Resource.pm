@@ -40,12 +40,22 @@ sub delete {
 
 sub update {
 	my($self) = @_;
-	my($res) = $self->ua->request($self->create_request(PUT => $self->path, undef, $self->json->encode({spec=>$self->spec, apiVersion=>$self->api_version, kind=>$self->kind, metadata=>$self->metadata})));
+	my($res) = $self->ua->request($self->create_request(PUT => $self->path, undef, $self->json->encode($self->as_hashref)));
 	if ($res->is_success) {
 		return 1;
 	}
-	print Dumper($res)."\n";
 	return 0;
+}
+
+sub as_hashref
+{
+	my($self) = @_;
+	return {
+		inner(),
+		apiVersion=>$self->api_version,
+		kind=>$self->kind,
+		metadata=>$self->metadata
+	};
 }
 
 

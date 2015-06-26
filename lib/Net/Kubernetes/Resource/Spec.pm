@@ -15,4 +15,11 @@ has spec => (
 	required => 1
 );
 
+around "as_hashref" => sub {
+	my ($orig, $self) = @_;
+	my $ref = $self->$orig;
+	$ref->{spec} = $self->spec;
+	return $ref;
+};
+
 return 42;

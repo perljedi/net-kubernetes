@@ -29,21 +29,25 @@ with 'Net::Kubernetes::Role::ResourceFactory';
 
 sub get_secret {
 	my($self, $name) = @_;
+	Net::Kubernetes::Exception->throw(message=>"Missing required parameter 'name'") if(! defined $name || ! length $name);
 	return $self->get_resource_by_name($name, 'secrets');
 }
 
 sub get_pod {
 	my($self, $name) = @_;
+	Net::Kubernetes::Exception->throw(message=>"Missing required parameter 'name'") if(! defined $name || ! length $name);
 	return $self->get_resource_by_name($name, 'pods');
 }
 
 sub get_service {
 	my($self, $name) = @_;
+	Net::Kubernetes::Exception->throw(message=>"Missing required parameter 'name'") if(! defined $name || ! length $name);
 	return $self->get_resource_by_name($name, 'services');
 }
 
 sub get_replication_controller {
 	my($self, $name) = @_;
+	Net::Kubernetes::Exception->throw(message=>"Missing required parameter 'name'") if(! defined $name || ! length $name);
 	return $self->get_resource_by_name($name, 'replicationcontrollers');
 }
 alias get_rc => 'get_replication_controller';
