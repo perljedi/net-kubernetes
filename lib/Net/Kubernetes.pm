@@ -142,8 +142,6 @@ sub get_namespace {
 
 return 42;
 
-=back
-
 =head1 See Also
 
 L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>, L<Net::Kubernetes::Resource::Pod>, L<Net::Kubernetes::Resource::ReplicationController>,
