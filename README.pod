@@ -107,8 +107,6 @@ Create from file is really just a short cut around something like:
 
 =back
 
-=back
-
 =head1 See Also
 
 L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>, L<Net::Kubernetes::Resource::Pod>, L<Net::Kubernetes::Resource::ReplicationController>,
