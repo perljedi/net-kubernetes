@@ -6,6 +6,8 @@ use Moose;
 
 Net::Kubernetes::Resource
 
+Base class for all Net::Kubernetes::Resource objects.
+
 =cut
 
 with 'Net::Kubernetes::Role::APIAccess';
@@ -28,6 +30,23 @@ has metadata => (
 	isa      => 'HashRef',
 	required => 1
 );
+
+=head1 Methods
+
+=over 1
+
+=item $resource->delete
+
+=item $resource->update (send local changes to api server)
+
+=item $resource->refresh (update object from api server)
+
+This method is only available for resources which have a status (currently everything
+other than secrets).
+
+=back
+
+=cut
 
 sub delete {
 	my($self) = @_;

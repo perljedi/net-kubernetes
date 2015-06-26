@@ -10,6 +10,14 @@ version 0.08
 
 This package provides an object oriented interface to the REST API's provided by kubernetes.
 
+=head1 STATUS
+
+=begin html
+
+<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=master" />
+
+=end html
+
 =head1 SYNOPSIS
 
   my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
@@ -73,37 +81,20 @@ to a file handle (from which to read the token).
 
 =back
 
-=back
+=item $kube->get_namespace("myNamespace");
 
-=head2 List resources
+This method returns a "Namespace" object on which many methods can be called implicitly
+limited to the specified namespace.
 
-These methods retrieve lists (optionally limited by field or label selector) of the various resources types
-kubernetes makes available via the API servers rest interface. These methods may also be called on a
-"Namespace" object, which will implicitly limit the result set by namespace.
+=item my(@pods) = $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
-All of these methods will return an array (or and array ref denpending on context) of the approriate
-resource type (Net::Kubernetes::Resource::Pod for example).
+=item my(@rcs) = $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
 
-=over 1
+=item my(@rcs) = $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
 
-=item $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
+=item my(@scerets) = $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
 
-=item $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
-
-=item $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
-
-=item $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
-
-=item $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
-
-=back
-
-=head2 Create Methods
-
-These methods may be called either globally or on a namespace object. The return value is is an object of the
-approriate type (determined by the "Kind" field)
-
-=over 1
+=item my(@services) = $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
 
 =item my $resource = $kube->create({OBJECT})
 
@@ -116,51 +107,12 @@ Create from file is really just a short cut around something like:
 
 =back
 
-=head2 Global scoped methods
-
-These methods are only available at the top level (i.e. not available via a namespace object)
-
-=over 1
-
-=item $kube->get_namespace("myNamespace");
-
-This method returns a "Namespace" object on which many methods can be called implicitly
-limited to the specified namespace.
-
 =back
 
-=head2 Namespace methods
+=head1 See Also
 
-These methods are accessible only from a name-space object.
-
-=over 1
-
-=item $ns->get_pod('my-pod-name')
-
-=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
-
-=item $ns->get_service('my-servce-name')
-
-=item $ns->get_secret('my-secret-name')
-
-=back
-
-=head2 Resource Methods
-
-These methods can be called directly on a resource object.
-
-=over 1
-
-=item $resource->delete
-
-=item $resource->refresh (update object from api server)
-
-=item $resource->update (send local changes to api server)
-
-This method is only available for resources which have a status (currently everything
-other than secretes).
-
-=back
+L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>, L<Net::Kubernetes::Resource::Pod>, L<Net::Kubernetes::Resource::ReplicationController>,
+L<Net::Kubernetes::Resource::Service>, L<Net::Kubernetes::Resource::Secret>
 
 =head1 AUTHOR
 

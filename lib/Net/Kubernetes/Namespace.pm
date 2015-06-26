@@ -7,6 +7,8 @@ use MooseX::Aliases;
 
 Net::Kubernetes::Namespace
 
+Provides access to kubernetes respources within a single namespace.
+
 =cut
 
 
@@ -26,6 +28,37 @@ with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
 with 'Net::Kubernetes::Role::ResourceCreator';
 with 'Net::Kubernetes::Role::ResourceFactory';
+
+
+=head1 Methods
+
+=over 1
+
+=item $ns->list_pods([label=>{label=>value}], [fields=>{field=>value}])
+
+=item $ns->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+
+=item $ns->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
+
+=item $ns->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+
+=item $ns->list_services([label=>{label=>value}], [fields=>{field=>value}])
+
+=item my $resource = $ns->create({OBJECT})
+
+=item my $resource = $ns->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+
+=item $ns->get_pod('my-pod-name')
+
+=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
+
+=item $ns->get_service('my-servce-name')
+
+=item $ns->get_secret('my-secret-name')
+
+=back
+
+=cut
 
 sub get_secret {
 	my($self, $name) = @_;

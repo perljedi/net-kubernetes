@@ -2,6 +2,14 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Standardize url construction (which also fixes a few bugs)
+
+ - Minor resource role refactor for clarity
+
+ - Added lots of unit tests for resource objects
+
+ - Adding travis-ci build status image to POD
+
 0.08 Thu Jun 25 2015
 
  - Added new method to resource controller to fetch its pods
