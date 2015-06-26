@@ -128,4 +128,44 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 	it_should_behave_like "Stateful Resources";
 };
 
+describe "Net::Kubernetes - Secret Objects " => sub {
+	before all => sub {
+		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
+		lives_ok {
+			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
+		};
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"type":"opaque", "data":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Secret", "apiVersion":"v1beta3"}'));
+		$sut = $ns->get_rc('mySecret');
+	};
+	before sub {
+		$lwpMock->resetCalls;
+	};
+	
+	it_should_behave_like "All Resources";
+	
+	it "has a type" => sub {
+		ok($sut->type);
+	};
+	it "has data" => sub {
+		ok($sut->data);
+	};
+};
+
+describe "Net::Kubernetes - Service Objects " => sub {
+	before all => sub {
+		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
+		lives_ok {
+			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
+		};
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "status":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Service", "apiVersion":"v1beta3"}'));
+		$sut = $ns->get_rc('mySecret');
+	};
+	before sub {
+		$lwpMock->resetCalls;
+	};
+	
+	it_should_behave_like "All Resources";
+	it_should_behave_like "Stateful Resources";
+};
+
 runtests;

@@ -10,8 +10,8 @@ Net::Kubernetes::Resource::ReplicationController
 =cut
 
 extends 'Net::Kubernetes::Resource';
-with 'Net::Kubernetes::Resource::State';
-with 'Net::Kubernetes::Resource::Spec';
+with 'Net::Kubernetes::Resource::Role::State';
+with 'Net::Kubernetes::Resource::Role::Spec';
 with 'Net::Kubernetes::Role::ResourceFactory';
 
 sub get_pods {

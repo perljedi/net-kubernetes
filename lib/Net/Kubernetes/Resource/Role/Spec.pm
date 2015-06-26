@@ -1,10 +1,12 @@
-package Net::Kubernetes::Resource::Spec;
+package Net::Kubernetes::Resource::Role::Spec;
 
 use Moose::Role;
 
 =head1 NAME
 
-Net::Kubernetes::Resource::Spec
+Net::Kubernetes::Resource::Role::Spec
+
+Role for resource objects which has a "spec" attribute.
 
 =cut
 

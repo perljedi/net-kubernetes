@@ -10,7 +10,7 @@ Net::Kubernetes::Resource::Service
 
 extends 'Net::Kubernetes::Resource';
 
-with 'Net::Kubernetes::Resource::State';
-with 'Net::Kubernetes::Resource::Spec';
+with 'Net::Kubernetes::Resource::Role::State';
+with 'Net::Kubernetes::Resource::Role::Spec';
 
 return 42;

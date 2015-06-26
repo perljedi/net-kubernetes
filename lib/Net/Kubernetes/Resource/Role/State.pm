@@ -1,10 +1,12 @@
-package Net::Kubernetes::Resource::State;
+package Net::Kubernetes::Resource::Role::State;
 
 use Moose::Role;
 
 =head1 NAME
 
-Net::Kubernetes::Resource::State
+Net::Kubernetes::Resource::Role::State
+
+Role for resource objects which have "state"
 
 =cut
 
