@@ -17,6 +17,14 @@ Net::Kubernetes
 
 This package provides an object oriented interface to the REST API's provided by kubernetes.
 
+=head1 STATUS
+
+=begin html
+
+<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=master" />
+
+=end html
+
 =head1 SYNOPSIS
 
   my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
