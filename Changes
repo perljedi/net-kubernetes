@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.10 Sat Jun 27 2015
+
  - Fixed circular dependency between Net::Kubernetes::Resource::Role::HasPods
    and Net::Kubernetes::Role::ResourceFactory which caused bugs in get_pods
 
