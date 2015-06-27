@@ -114,6 +114,17 @@ limited to the specified namespace.
 
 =item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
+=head2 The following methods are automatically deligated to the 'default' namespace.
+
+=item $ns->get_pod('my-pod-name')
+
+=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
+
+=item $ns->get_service('my-servce-name')
+
+=item $ns->get_secret('my-secret-name')
+
+
 Create from file is really just a short cut around something like:
 
   my $object = YAML::LoadFile(PATH_TO_FILE);
@@ -122,6 +133,15 @@ Create from file is really just a short cut around something like:
 =back
 
 =cut
+
+has 'default_namespace' => (
+	is         => 'rw',
+	isa        => 'Net::Kubernetes::Namespace',
+	required   => 0,
+	lazy       => 1,
+	handles    => [qw(get_pod get_rc get_replication_controller get_secret get_service)],
+	builder    => '_get_default_namespace',
+);
 
 sub get_namespace {
 	my($self, $namespace) = @_;
@@ -138,6 +158,11 @@ sub get_namespace {
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error getting namespace $namespace:\n".$res->message);
 	}
+}
+
+sub _get_default_namespace {
+	my($self) = @_;
+	return $self->get_namespace('default');
 }
 
 return 42;
