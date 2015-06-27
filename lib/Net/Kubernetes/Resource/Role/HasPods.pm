@@ -22,7 +22,6 @@ sub get_pods {
 		my(@pods)=();
 		foreach my $pod (@{ $pod_list->{items}}){
 			$pod->{apiVersion} = $pod_list->{apiVersion};
-			push @pods, $self->create_resource_object($pod, 'Pod');
 			my(%create_args) = %$pod;
 			$create_args{api_version} = $pod->{apiVersion};
 			$create_args{username} = $self->username if($self->username);
