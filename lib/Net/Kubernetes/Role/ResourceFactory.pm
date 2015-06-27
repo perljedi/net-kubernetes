@@ -9,7 +9,7 @@ require Net::Kubernetes::Resource::Secret;
 
 =head1 NAME
 
-Net::Kubernetes::Role::ResoruceFactory
+Net::Kubernetes::Role::ResourceFactory
 
 =cut
 
