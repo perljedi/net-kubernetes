@@ -6,7 +6,7 @@ Net::Kubernetes
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 This package provides an object oriented interface to the REST API's provided by kubernetes.
 
@@ -99,6 +99,21 @@ limited to the specified namespace.
 =item my $resource = $kube->create({OBJECT})
 
 =item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+
+=back
+
+=head2 The following methods are automatically deligated to the 'default' namespace.
+
+=over 1
+
+=item $ns->get_pod('my-pod-name')
+
+=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
+
+=item $ns->get_service('my-servce-name')
+
+=item $ns->get_secret('my-secret-name')
+
 
 Create from file is really just a short cut around something like:
 

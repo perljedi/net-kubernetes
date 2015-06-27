@@ -2,6 +2,13 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Fixed circular dependency between Net::Kubernetes::Resource::Role::HasPods
+   and Net::Kubernetes::Role::ResourceFactory which caused bugs in get_pods
+
+ - Added automatic delegation from the top level $kube object
+   to default namespace for get_pod, get_secret, get_rc and
+   get_service
+
 0.09 Fri Jun 26 2015
 
  - Standardize url construction (which also fixes a few bugs)

@@ -114,7 +114,11 @@ limited to the specified namespace.
 
 =item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
+=back
+
 =head2 The following methods are automatically deligated to the 'default' namespace.
+
+=over 1
 
 =item $ns->get_pod('my-pod-name')
 
