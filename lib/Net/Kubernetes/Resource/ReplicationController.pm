@@ -22,7 +22,7 @@ with 'Net::Kubernetes::Resource::Role::HasPods';
 
 =item my(@pods) = $rc->get_pods()
 
-Fetch a list off all pods belonging to this replication controller
+Fetch a list off all pods belonging to this replication controller.
 
 =back
 

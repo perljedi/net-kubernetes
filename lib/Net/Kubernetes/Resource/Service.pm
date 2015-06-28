@@ -21,7 +21,7 @@ with 'Net::Kubernetes::Resource::Role::HasPods';
 
 =item my(@pods) = $service->get_pods()
 
-Fetch a list off all pods belonging to this service
+Fetch a list off all pods belonging to this service.
 
 =back
 

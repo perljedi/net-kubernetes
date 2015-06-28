@@ -37,12 +37,17 @@ has metadata => (
 
 =item $resource->delete
 
+Delete this rsource.
+
 =item $resource->update (send local changes to api server)
 
-=item $resource->refresh (update object from api server)
+Saves any changes made to metadata, or spec or any other resource type specific changes
+made since this item was last pulled from the server.
 
-This method is only available for resources which have a status (currently everything
-other than secrets).
+=item $resource->refresh
+
+Update status information from server.  This is only available for reosurce types which have
+a status field (Currently that is everything other than 'Secret' objects)
 
 =back
 

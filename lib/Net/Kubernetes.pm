@@ -114,9 +114,15 @@ limited to the specified namespace.
 
 =item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
+Create from file is really just a short cut around something like:
+
+  my $object = YAML::LoadFile(PATH_TO_FILE);
+  $kube->create($object);
+
 =back
 
 =head2 The following methods are automatically deligated to the 'default' namespace.
+(See L<Net::Kubernetes::Namespace>)
 
 =over 1
 
@@ -127,12 +133,6 @@ limited to the specified namespace.
 =item $ns->get_service('my-servce-name')
 
 =item $ns->get_secret('my-secret-name')
-
-
-Create from file is really just a short cut around something like:
-
-  my $object = YAML::LoadFile(PATH_TO_FILE);
-  $kube->create($object);
 
 =back
 
