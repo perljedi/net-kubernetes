@@ -1,16 +1,11 @@
 package Net::Kubernetes::Role::ResourceLister;
+# ABSTRACT: Role to give access to list_* methods.
 
 use Moose::Role;
 use MooseX::Aliases;
 require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
-
-=head1 NAME
-
-Net::Kubernetes::Role::ResourceLister
-
-=cut
 
 with 'Net::Kubernetes::Role::ResourceFactory';
 

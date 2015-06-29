@@ -1,14 +1,7 @@
 package Net::Kubernetes::Resource::Role::HasPods;
+# ABSTRACT: Resource role for types that may contain pods
 
 use Moose::Role;
-
-=head1 NAME
-
-Net::Kubernetes::Resource::Role::HasPods
-
-Role for resource object which might "Have Pods" ... i.e. Replication Controller or Services
-
-=cut
 
 with 'Net::Kubernetes::Role::APIAccess';
 

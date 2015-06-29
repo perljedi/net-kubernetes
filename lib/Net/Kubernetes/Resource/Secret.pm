@@ -1,12 +1,8 @@
 package Net::Kubernetes::Resource::Secret;
+# ABSTRACT: Object representatioon of a Kubernetes Secret
 
 use Moose;
 
-=head1 NAME
-
-Net::Kubernetes::Resource::Secret
-
-=cut
 
 extends 'Net::Kubernetes::Resource';
 

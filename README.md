@@ -1,6 +1,6 @@
 # NAME
 
-Net::Kubernetes - This package provides an object oriented interface to the REST API's provided by kubernetes.
+Net::Kubernetes - An object oriented interface to the REST API's provided by kubernetes
 
 [![Build Status](https://travis-ci.org/perljedi/net-kubernetes.png?branch=release-0.10)](https://travis-ci.org/perljedi/net-kubernetes)
 
@@ -25,83 +25,84 @@ version 0.10
     
     my $other_pod = $ns->create_from_file('./my-pod.yaml');
 
-# Description
+# METHODS
 
-This package allows programatic access to the [Kubernetes](http://kubernetes.io) rest api.
+## new - Create a new $kube object
 
-Please note this package is still a BETA release (as is kubernetes itself), and the methods
-and API are still subject to change.  Use at your own risk.
+All parameters are optional and have some basic default values (where appropriate).
 
-# Methods
+- url \['http://localhost:8080'\]
 
-By convention, methods will throw exceptions if kubernetes api server returns a non-successful status code.
-Unless otherwise noted, assume this behavoir through out.
+    The base url for the kubernetes. This should include the protocal (http or https) but not "/api/v1beta3" (see base\_path).
 
-- new - Create a new $kube object
+- base\_path \['/api/v1beta3'\]
 
-    All parameters are optional and have some basic default values (where appropriate).
+    The entry point for api calls, this may be used to set the api version with which to interact.
 
-    - url \['http://localhost:8080'\]
+- username
 
-        The base url for the kubernetes. This should include the protocal (http or https) but not "/api/v1beta3" (see base\_path).
+    Username to use with basic authentication. If either username or password are not provided, basic authentication will not
+    be used.
 
-    - base\_path \['/api/v1beta3'\]
+- password
 
-        The entry point for api calls, this may be used to set the api version with which to interact.
+    Password to use with basic authentication. If either username or password are not provided, basic authentication will not
+    be used.
 
-    - username
+- token
 
-        Username to use with basic authentication. If either username or password are not provided, basic authentication will not
-        be used.
+    An authentication token to be used to access the apiserver.  This may be provided as a plain string, a path to a file
+    from which to read the token (like /var/run/secrets/kubernetes.io/serviceaccount/token from within a pod), or a reference
+    to a file handle (from which to read the token).
 
-    - password
+## $kube->get\_namespace("myNamespace");
 
-        Password to use with basic authentication. If either username or password are not provided, basic authentication will not
-        be used.
+This method returns a "Namespace" object on which many methods can be called implicitly
+limited to the specified namespace.
 
-    - token
+## my(@pods) = $kube->list\_pods(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-        An authentication token to be used to access the apiserver.  This may be provided as a plain string, a path to a file
-        from which to read the token (like /var/run/secrets/kubernetes.io/serviceaccount/token from within a pod), or a reference
-        to a file handle (from which to read the token).
+## my(@rcs) = $kube->list\_rc(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-- $kube->get\_namespace("myNamespace");
+## my(@rcs) = $kube->list\_replication\_controllers(\[label=>{label=>value}\], \[fields=>{field=>value}\]) (alias to list\_rc)
 
-    This method returns a "Namespace" object on which many methods can be called implicitly
-    limited to the specified namespace.
+## my(@scerets) = $kube->list\_secrets(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-- my(@pods) = $kube->list\_pods(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-- my(@rcs) = $kube->list\_rc(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-- my(@rcs) = $kube->list\_replication\_controllers(\[label=>{label=>value}\], \[fields=>{field=>value}\]) (alias to list\_rc)
-- my(@scerets) = $kube->list\_secrets(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-- my(@services) = $kube->list\_services(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-- my $resource = $kube->create({OBJECT})
-- my $resource = $kube->create\_from\_file(PATH\_TO\_FILE) (accepts either JSON or YAML files)
+## my(@services) = $kube->list\_services(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-    Create from file is really just a short cut around something like:
+## my $resource = $kube->create({OBJECT})
 
-        my $object = YAML::LoadFile(PATH_TO_FILE);
-        $kube->create($object);
+## my $resource = $kube->create\_from\_file(PATH\_TO\_FILE) (accepts either JSON or YAML files)
 
-## The following methods are automatically deligated to the 'default' namespace.
-(See [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace))
+Create from file is really just a short cut around something like:
 
-- $ns->get\_pod('my-pod-name')
-- $ns->get\_repllcation\_controller('my-rc-name') (aliased as $ns->get\_rc('my-rc-name'))
-- $ns->get\_service('my-servce-name')
-- $ns->get\_secret('my-secret-name')
+    my $object = YAML::LoadFile(PATH_TO_FILE);
+    $kube->create($object);
 
-# See Also
+## $ns->get\_pod('my-pod-name')
 
-[Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace), [Net::Kubernetes::Resource](https://metacpan.org/pod/Net::Kubernetes::Resource)
+## $ns->get\_repllcation\_controller('my-rc-name') (aliased as $ns->get\_rc('my-rc-name'))
+
+## $ns->get\_service('my-servce-name')
+
+## $ns->get\_secret('my-secret-name')
+
+## get\_namespace
+
+<div>
+    <h2>Build Status</h2>
+
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.10" />
+</div>
 
 # AUTHOR
 
-    Dave Mueller <dave@perljedi.com>
+Dave Mueller <dave@perljedi.com>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2015 by Dave Mueller.
+This software is Copyright (c) 2015 by Dave Mueller.
 
-This is free software; you can redistribute it and/or modify it under the
-same terms as the Perl 5 programming language system itself.
+This is free software, licensed under:
+
+    The MIT (X11) License

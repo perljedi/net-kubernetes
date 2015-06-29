@@ -1,14 +1,7 @@
 package Net::Kubernetes::Resource;
+# ABSTRACT: Base class for all Net::Kubernetes::Resource objects.
 
 use Moose;
-
-=head1 NAME
-
-Net::Kubernetes::Resource
-
-Base class for all Net::Kubernetes::Resource objects.
-
-=cut
 
 with 'Net::Kubernetes::Role::APIAccess';
 
@@ -31,25 +24,19 @@ has metadata => (
 	required => 1
 );
 
-=head1 Methods
-
-=over 1
-
-=item $resource->delete
+=method $resource->delete
 
 Delete this rsource.
 
-=item $resource->update (send local changes to api server)
+=method $resource->update (send local changes to api server)
 
 Saves any changes made to metadata, or spec or any other resource type specific changes
 made since this item was last pulled from the server.
 
-=item $resource->refresh
+=method $resource->refresh
 
 Update status information from server.  This is only available for reosurce types which have
 a status field (Currently that is everything other than 'Secret' objects)
-
-=back
 
 =cut
 
@@ -81,12 +68,5 @@ sub as_hashref
 		metadata=>$self->metadata
 	};
 }
-
-=head1 See Also
-
-L<Net::Kubernetes::Resource::ReplicationController>, L<Net::Kubernetes::Resource::Service>
-
-=cut
-
 
 return 42;

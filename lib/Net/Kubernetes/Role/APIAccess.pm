@@ -1,4 +1,5 @@
 package Net::Kubernetes::Role::APIAccess;
+# ABSTRACT: Role allowing direct access to the REST api
 
 use Moose::Role;
 require LWP::UserAgent;
@@ -7,12 +8,6 @@ use JSON::MaybeXS;
 require Cpanel::JSON::XS;
 require URI;
 use MIME::Base64;
-
-=head1 NAME
-
-Net::Kubernetes::Role::APIAccess
-
-=cut
 
 
 has url => (

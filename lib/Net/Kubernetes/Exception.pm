@@ -1,11 +1,7 @@
 package Net::Kubernetes::Exception;
+# ABSTRACT: Base class for all kubernetes exceptions.
+
 use Moose;
-
-=head1 NAME
-
-Net::Kubernetes::Exception
-
-=cut
 
 extends "Throwable::Error";
 
@@ -27,6 +23,8 @@ no Moose::Util::TypeConstraints;
 
 
 package Net::Kunbernetes::Exception::NotFound;
+# ABSTRACT: Kubernetes Not found exception (code 404)
+
 require Net::Kubernetes::Exception;
 use Moose;
 
@@ -34,6 +32,8 @@ extends 'Net::Kubernetes::Exception';
 extends 'Throwable::Error';
 
 package Net::Kunbernetes::Exception::Conflict;
+# ABSTRACT: Kubernetes 'Conflict' exception (code 409)
+
 require Net::Kubernetes::Exception;
 use Moose;
 
@@ -41,6 +41,8 @@ extends 'Net::Kubernetes::Exception';
 extends 'Throwable::Error';
 
 package Net::Kunbernetes::Exception::BadRequest;
+# ABSTRACT: Kubernetes 'Bad Request' exception (code 400)
+
 require Net::Kubernetes::Exception;
 use Moose;
 

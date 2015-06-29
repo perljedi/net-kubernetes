@@ -1,17 +1,9 @@
 package Net::Kubernetes::Namespace;
+# ABSTRACT: Provides access to kubernetes respources within a single namespace.
 
 use Moose;
 use MooseX::Aliases;
 use syntax 'try';
-
-=head1 NAME
-
-Net::Kubernetes::Namespace
-
-Provides access to kubernetes respources within a single namespace.
-
-=cut
-
 
 has namespace => (
 	is       => 'ro',
@@ -31,33 +23,27 @@ with 'Net::Kubernetes::Role::ResourceCreator';
 with 'Net::Kubernetes::Role::ResourceFactory';
 
 
-=head1 Methods
+=method $ns->list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
-=over 1
+=method $ns->list_rc([label=>{label=>value}], [fields=>{field=>value}])
 
-=item $ns->list_pods([label=>{label=>value}], [fields=>{field=>value}])
+=method $ns->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
 
-=item $ns->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+=method $ns->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
 
-=item $ns->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
+=method $ns->list_services([label=>{label=>value}], [fields=>{field=>value}])
 
-=item $ns->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+=method my $resource = $ns->create({OBJECT})
 
-=item $ns->list_services([label=>{label=>value}], [fields=>{field=>value}])
+=method my $resource = $ns->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
-=item my $resource = $ns->create({OBJECT})
+=method $ns->get_pod('my-pod-name')
 
-=item my $resource = $ns->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+=method $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
 
-=item $ns->get_pod('my-pod-name')
+=method $ns->get_service('my-servce-name')
 
-=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
-
-=item $ns->get_service('my-servce-name')
-
-=item $ns->get_secret('my-secret-name')
-
-=back
+=method $ns->get_secret('my-secret-name')
 
 =cut
 

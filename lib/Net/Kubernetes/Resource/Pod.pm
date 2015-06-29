@@ -1,12 +1,7 @@
 package Net::Kubernetes::Resource::Pod;
+# ABSTRACT: Object representatioon of a Kubernetes Pod
 
 use Moose;
-
-=head1 NAME
-
-Net::Kubernetes::Resource::Pod
-
-=cut
 
 extends 'Net::Kubernetes::Resource';
 

@@ -1,4 +1,5 @@
 package Net::Kubernetes::Role::ResourceCreator;
+# ABSTRACT: Role to allow creation of resources from either objects or files.
 
 use Moose::Role;
 use MooseX::Aliases;
@@ -10,12 +11,6 @@ require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
 use File::Slurp;
 use syntax 'try';
-
-=head1 NAME
-
-Net::Kubernetes::Role::ResoruceCreator - Internal role applied to a few objects
-
-=cut
 
 with 'Net::Kubernetes::Role::ResourceFactory';
 

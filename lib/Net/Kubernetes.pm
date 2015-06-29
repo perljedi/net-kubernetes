@@ -1,4 +1,5 @@
 package Net::Kubernetes;
+# ABSTRACT: An object oriented interface to the REST API's provided by kubernetes
 
 use Moose;
 require Net::Kubernetes::Namespace;
@@ -8,20 +9,6 @@ require URI;;
 require Throwable::Error;
 use MIME::Base64;
 require Net::Kubernetes::Exception;
-
-# ABSTRACT: Perl interface to kubernetes
-
-=head1 NAME
-
-Net::Kubernetes - This package provides an object oriented interface to the REST API's provided by kubernetes.
-
-=head1 STATUS
-
-=begin html
-
-<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=master" />
-
-=end html
 
 =head1 SYNOPSIS
 
@@ -40,12 +27,13 @@ Net::Kubernetes - This package provides an object oriented interface to the REST
   
   my $other_pod = $ns->create_from_file('./my-pod.yaml');
 
-=head1 Description
+=begin html
 
-This package allows programatic access to the L<Kubernetes|http://kubernetes.io> rest api.
+<h2>Build Status</h2>
 
-Please note this package is still a BETA release (as is kubernetes itself), and the methods
-and API are still subject to change.  Use at your own risk.
+<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.10" />
+
+=end html
 
 =cut
 
@@ -54,14 +42,8 @@ with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
 with 'Net::Kubernetes::Role::ResourceCreator';
 
-=head1 Methods
 
-By convention, methods will throw exceptions if kubernetes api server returns a non-successful status code.
-Unless otherwise noted, assume this behavoir through out.
-
-=over 1
-
-=item new - Create a new $kube object
+=method new - Create a new $kube object
 
 All parameters are optional and have some basic default values (where appropriate).
 
@@ -93,46 +75,37 @@ to a file handle (from which to read the token).
 
 =back
 
-=item $kube->get_namespace("myNamespace");
+=method $kube->get_namespace("myNamespace");
 
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
 
-=item my(@pods) = $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
+=method my(@pods) = $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
-=item my(@rcs) = $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+=method my(@rcs) = $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
 
-=item my(@rcs) = $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
+=method my(@rcs) = $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
 
-=item my(@scerets) = $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+=method my(@scerets) = $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
 
-=item my(@services) = $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
+=method my(@services) = $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
 
-=item my $resource = $kube->create({OBJECT})
+=method my $resource = $kube->create({OBJECT})
 
-=item my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+=method my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
 Create from file is really just a short cut around something like:
 
   my $object = YAML::LoadFile(PATH_TO_FILE);
   $kube->create($object);
 
-=back
+=method $ns->get_pod('my-pod-name')
 
-=head2 The following methods are automatically deligated to the 'default' namespace.
-(See L<Net::Kubernetes::Namespace>)
+=method $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
 
-=over 1
+=method $ns->get_service('my-servce-name')
 
-=item $ns->get_pod('my-pod-name')
-
-=item $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
-
-=item $ns->get_service('my-servce-name')
-
-=item $ns->get_secret('my-secret-name')
-
-=back
+=method $ns->get_secret('my-secret-name')
 
 =cut
 
@@ -144,6 +117,10 @@ has 'default_namespace' => (
 	handles    => [qw(get_pod get_rc get_replication_controller get_secret get_service)],
 	builder    => '_get_default_namespace',
 );
+
+=method get_namespace
+
+=cut
 
 sub get_namespace {
 	my($self, $namespace) = @_;
@@ -168,18 +145,3 @@ sub _get_default_namespace {
 }
 
 return 42;
-
-=head1 See Also
-
-L<Net::Kubernetes::Namespace>, L<Net::Kubernetes::Resource>
-
-=head1 AUTHOR
-
-  Dave Mueller <dave@perljedi.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2015 by Dave Mueller.
-
-This is free software; you can redistribute it and/or modify it under the
-same terms as the Perl 5 programming language system itself.

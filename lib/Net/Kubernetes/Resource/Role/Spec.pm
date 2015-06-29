@@ -1,15 +1,7 @@
 package Net::Kubernetes::Resource::Role::Spec;
+# ABSTRACT: Resource role for types that have a spec
 
 use Moose::Role;
-
-=head1 NAME
-
-Net::Kubernetes::Resource::Role::Spec
-
-Role for resource objects which has a "spec" attribute.
-
-=cut
-
 
 has spec => (
 	is       => 'rw',

@@ -1,15 +1,7 @@
 package Net::Kubernetes::Resource::Role::State;
+# ABSTRACT: Resource role for types that have a status
 
 use Moose::Role;
-
-=head1 NAME
-
-Net::Kubernetes::Resource::Role::State
-
-Role for resource objects which have "state"
-
-=cut
-
 
 has status => (
 	is       => 'rw',

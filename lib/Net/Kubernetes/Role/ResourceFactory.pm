@@ -1,4 +1,5 @@
 package Net::Kubernetes::Role::ResourceFactory;
+# ABSTRACT: Role to allow easy construction of Net::Kubernetes::Resouce::* objects
 
 use Moose::Role;
 use MooseX::Aliases;
@@ -6,12 +7,6 @@ require Net::Kubernetes::Resource::Service;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
-
-=head1 NAME
-
-Net::Kubernetes::Role::ResourceFactory
-
-=cut
 
 sub create_resource_object {
 	my($self, $object, $kind) = @_;
