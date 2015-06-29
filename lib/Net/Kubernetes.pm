@@ -13,9 +13,7 @@ require Net::Kubernetes::Exception;
 
 =head1 NAME
 
-Net::Kubernetes
-
-This package provides an object oriented interface to the REST API's provided by kubernetes.
+Net::Kubernetes - This package provides an object oriented interface to the REST API's provided by kubernetes.
 
 =head1 STATUS
 
