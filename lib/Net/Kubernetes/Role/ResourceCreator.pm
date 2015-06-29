@@ -9,6 +9,7 @@ require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
 use File::Slurp;
+use syntax 'try';
 
 =head1 NAME
 
@@ -60,7 +61,15 @@ sub create {
 	if ($res->is_success) {
 		return $self->create_resource_object($self->json->decode($res->content));
 	}else{
-		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error creating resource:\n".$res->message);
+		my $message;
+		try{
+			my $obj = $self->json->decode($res->content);
+			$message = $obj->{message};
+		}
+		catch($e) {
+			$message = $res->message;
+		}
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error creating resource: ".$message);
 	}
 }
 

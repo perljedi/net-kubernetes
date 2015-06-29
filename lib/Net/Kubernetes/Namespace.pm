@@ -2,6 +2,7 @@ package Net::Kubernetes::Namespace;
 
 use Moose;
 use MooseX::Aliases;
+use syntax 'try';
 
 =head1 NAME
 
@@ -93,6 +94,14 @@ sub get_resource_by_name {
 		return $self->create_resource_object($self->json->decode($res->content));
 	}
 	else {
-		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+		my $message;
+		try{
+			my $obj = $self->json->decode($res->content);
+			$message = $obj->{message};
+		}
+		catch($e) {
+			$message = $res->message;
+		}
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$message);
 	}
 }
