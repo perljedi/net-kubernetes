@@ -75,37 +75,57 @@ to a file handle (from which to read the token).
 
 =back
 
-=method $kube->get_namespace("myNamespace");
+=method get_namespace("myNamespace");
 
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
 
-=method my(@pods) = $kube->list_pods([label=>{label=>value}], [fields=>{field=>value}])
+=method list_pods([label=>{label=>value}], [fields=>{field=>value}])
 
-=method my(@rcs) = $kube->list_rc([label=>{label=>value}], [fields=>{field=>value}])
+returns a list of L<Net::Kubernetes::Resource::Pod>s
 
-=method my(@rcs) = $kube->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
+=method list_rc([label=>{label=>value}], [fields=>{field=>value}])
 
-=method my(@scerets) = $kube->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
 
-=method my(@services) = $kube->list_services([label=>{label=>value}], [fields=>{field=>value}])
+=method list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}])
 
-=method my $resource = $kube->create({OBJECT})
+returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
 
-=method my $resource = $kube->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+=method list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Secret>s
+
+=method list_services([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Service>s
+
+=method create({OBJECT})
+
+Creates a new L<Net::Kubernetes::Resource> (subtype determined by $BNJECT->{kind})
+
+=method create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
 
 Create from file is really just a short cut around something like:
 
   my $object = YAML::LoadFile(PATH_TO_FILE);
   $kube->create($object);
 
-=method $ns->get_pod('my-pod-name')
+=method get_pod('my-pod-name')
 
-=method $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
+Delegates automatically to L<Net::Kubernetes::Namespace> via $self->get_namespace('default')
 
-=method $ns->get_service('my-servce-name')
+=method get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
 
-=method $ns->get_secret('my-secret-name')
+Delegates automatically to L<Net::Kubernetes::Namespace> via $self->get_namespace('default')
+
+=method get_service('my-servce-name')
+
+Delegates automatically to L<Net::Kubernetes::Namespace> via $self->get_namespace('default')
+
+=method get_secret('my-secret-name')
+
+Delegates automatically to L<Net::Kubernetes::Namespace> via $self->get_namespace('default')
 
 =cut
 
@@ -117,10 +137,6 @@ has 'default_namespace' => (
 	handles    => [qw(get_pod get_rc get_replication_controller get_secret get_service)],
 	builder    => '_get_default_namespace',
 );
-
-=method get_namespace
-
-=cut
 
 sub get_namespace {
 	my($self, $namespace) = @_;
@@ -143,5 +159,7 @@ sub _get_default_namespace {
 	my($self) = @_;
 	return $self->get_namespace('default');
 }
+
+# SEEALSO: Net::Kubernetes::Namespace, Net::Kubernetes::Resource
 
 return 42;

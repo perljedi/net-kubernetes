@@ -55,39 +55,57 @@ All parameters are optional and have some basic default values (where appropriat
     from which to read the token (like /var/run/secrets/kubernetes.io/serviceaccount/token from within a pod), or a reference
     to a file handle (from which to read the token).
 
-## $kube->get\_namespace("myNamespace");
+## get\_namespace("myNamespace");
 
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
 
-## my(@pods) = $kube->list\_pods(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+## list\_pods(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-## my(@rcs) = $kube->list\_rc(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+returns a list of [Net::Kubernetes::Resource::Pod](https://metacpan.org/pod/Net::Kubernetes::Resource::Pod)s
 
-## my(@rcs) = $kube->list\_replication\_controllers(\[label=>{label=>value}\], \[fields=>{field=>value}\]) (alias to list\_rc)
+## list\_rc(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-## my(@scerets) = $kube->list\_secrets(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+returns a list of [Net::Kubernetes::Resource::ReplicationController](https://metacpan.org/pod/Net::Kubernetes::Resource::ReplicationController)s
 
-## my(@services) = $kube->list\_services(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+## list\_replication\_controllers(\[label=>{label=>value}\], \[fields=>{field=>value}\])
 
-## my $resource = $kube->create({OBJECT})
+returns a list of [Net::Kubernetes::Resource::ReplicationController](https://metacpan.org/pod/Net::Kubernetes::Resource::ReplicationController)s
 
-## my $resource = $kube->create\_from\_file(PATH\_TO\_FILE) (accepts either JSON or YAML files)
+## list\_secrets(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+
+returns a list of [Net::Kubernetes::Resource::Secret](https://metacpan.org/pod/Net::Kubernetes::Resource::Secret)s
+
+## list\_services(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+
+returns a list of [Net::Kubernetes::Resource::Service](https://metacpan.org/pod/Net::Kubernetes::Resource::Service)s
+
+## create({OBJECT})
+
+Creates a new [Net::Kubernetes::Resource](https://metacpan.org/pod/Net::Kubernetes::Resource) (subtype determined by $BNJECT->{kind})
+
+## create\_from\_file(PATH\_TO\_FILE) (accepts either JSON or YAML files)
 
 Create from file is really just a short cut around something like:
 
     my $object = YAML::LoadFile(PATH_TO_FILE);
     $kube->create($object);
 
-## $ns->get\_pod('my-pod-name')
+## get\_pod('my-pod-name')
 
-## $ns->get\_repllcation\_controller('my-rc-name') (aliased as $ns->get\_rc('my-rc-name'))
+Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace) via $self->get\_namespace('default')
 
-## $ns->get\_service('my-servce-name')
+## get\_repllcation\_controller('my-rc-name') (aliased as $ns->get\_rc('my-rc-name'))
 
-## $ns->get\_secret('my-secret-name')
+Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace) via $self->get\_namespace('default')
 
-## get\_namespace
+## get\_service('my-servce-name')
+
+Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace) via $self->get\_namespace('default')
+
+## get\_secret('my-secret-name')
+
+Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace) via $self->get\_namespace('default')
 
 <div>
     <h2>Build Status</h2>
@@ -106,3 +124,10 @@ This software is Copyright (c) 2015 by Dave Mueller.
 This is free software, licensed under:
 
     The MIT (X11) License
+
+# SEE ALSO
+
+Please see those modules/websites for more information related to this module.
+
+- [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace)
+- [Net::Kubernetes::Resource](https://metacpan.org/pod/Net::Kubernetes::Resource)
