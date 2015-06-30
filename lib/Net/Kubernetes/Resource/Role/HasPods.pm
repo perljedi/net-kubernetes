@@ -5,6 +5,12 @@ use Moose::Role;
 
 with 'Net::Kubernetes::Role::APIAccess';
 
+=method get_pods
+
+retreive a list of pods associated with with respource (either ReplicationController or Service)
+
+=cut
+
 sub get_pods {
 	my($self) = @_;
 	my $uri = URI->new_abs("../pods", $self->path);

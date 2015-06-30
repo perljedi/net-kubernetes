@@ -9,6 +9,12 @@ has status => (
 	required => 1
 );
 
+=method refresh
+
+Retrieve current state information from kubernetes.
+
+=cut
+
 sub refresh {
 	my($self) = @_;
 	my($res) = $self->ua->request($self->create_request(GET => $self->path));

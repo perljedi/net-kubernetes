@@ -18,6 +18,18 @@ requires 'ua';
 requires 'create_request';
 requires 'json';
 
+=method create({OBJECT})
+
+Creates a new L<Net::Kubernetes::Resource> (subtype determined by $BNJECT->{kind})
+
+=method create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
+
+Create from file is really just a short cut around something like:
+
+  my $object = YAML::LoadFile(PATH_TO_FILE);
+  $kube->create($object);
+
+=cut
 
 sub create_from_file {
 	my($self, $file) = @_;

@@ -13,6 +13,11 @@ requires 'ua';
 requires 'create_request';
 requires 'json';
 
+=method list_pods([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Pod>s
+
+=cut
 
 sub list_pods {
 	my $self = shift;
@@ -42,6 +47,16 @@ sub list_pods {
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
 }
+
+=method list_rc([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
+
+=method list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
+
+=cut
 
 sub list_replication_controllers {
 	my $self = shift;
@@ -74,6 +89,12 @@ sub list_replication_controllers {
 
 alias list_rc => 'list_replication_controllers';
 
+=method list_services([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Service>s
+
+=cut
+
 sub list_services {
 	my $self = shift;
 	my(%options);
@@ -102,6 +123,13 @@ sub list_services {
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
 }
+
+
+=method list_secrets([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Secret>s
+
+=cut
 
 sub list_secrets {
 	my $self = shift;

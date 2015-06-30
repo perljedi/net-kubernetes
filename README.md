@@ -131,3 +131,10 @@ Please see those modules/websites for more information related to this module.
 
 - [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace)
 - [Net::Kubernetes::Resource](https://metacpan.org/pod/Net::Kubernetes::Resource)
+
+# CONSUMES
+
+- [Net::Kubernetes::Role::APIAccess](https://metacpan.org/pod/Net::Kubernetes::Role::APIAccess)
+- [Net::Kubernetes::Role::ResourceCreator](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceCreator)
+- [Net::Kubernetes::Role::ResourceFactory](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceFactory)
+- [Net::Kubernetes::Role::ResourceLister](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceLister)

@@ -80,37 +80,6 @@ to a file handle (from which to read the token).
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
 
-=method list_pods([label=>{label=>value}], [fields=>{field=>value}])
-
-returns a list of L<Net::Kubernetes::Resource::Pod>s
-
-=method list_rc([label=>{label=>value}], [fields=>{field=>value}])
-
-returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
-
-=method list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}])
-
-returns a list of L<Net::Kubernetes::Resource::ReplicationController>s
-
-=method list_secrets([label=>{label=>value}], [fields=>{field=>value}])
-
-returns a list of L<Net::Kubernetes::Resource::Secret>s
-
-=method list_services([label=>{label=>value}], [fields=>{field=>value}])
-
-returns a list of L<Net::Kubernetes::Resource::Service>s
-
-=method create({OBJECT})
-
-Creates a new L<Net::Kubernetes::Resource> (subtype determined by $BNJECT->{kind})
-
-=method create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
-
-Create from file is really just a short cut around something like:
-
-  my $object = YAML::LoadFile(PATH_TO_FILE);
-  $kube->create($object);
-
 =method get_pod('my-pod-name')
 
 Delegates automatically to L<Net::Kubernetes::Namespace> via $self->get_namespace('default')

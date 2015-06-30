@@ -22,21 +22,6 @@ with 'Net::Kubernetes::Role::ResourceLister';
 with 'Net::Kubernetes::Role::ResourceCreator';
 with 'Net::Kubernetes::Role::ResourceFactory';
 
-
-=method $ns->list_pods([label=>{label=>value}], [fields=>{field=>value}])
-
-=method $ns->list_rc([label=>{label=>value}], [fields=>{field=>value}])
-
-=method $ns->list_replication_controllers([label=>{label=>value}], [fields=>{field=>value}]) (alias to list_rc)
-
-=method $ns->list_secrets([label=>{label=>value}], [fields=>{field=>value}])
-
-=method $ns->list_services([label=>{label=>value}], [fields=>{field=>value}])
-
-=method my $resource = $ns->create({OBJECT})
-
-=method my $resource = $ns->create_from_file(PATH_TO_FILE) (accepts either JSON or YAML files)
-
 =method $ns->get_pod('my-pod-name')
 
 =method $ns->get_repllcation_controller('my-rc-name') (aliased as $ns->get_rc('my-rc-name'))
