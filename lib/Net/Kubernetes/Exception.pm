@@ -8,10 +8,12 @@ extends "Throwable::Error";
 has code => (
 	is       => 'ro',
 	isa      => 'Num',
-	required => 1,
+	required => 0,
 );
 
 use Moose::Util::TypeConstraints;
+
+subtype 'Net::Kubernetes::Exception::ClientException', as 'Net::Kubernetes::Exception', where {! defined $_->code};
 
 subtype 'Net::Kubernetes::Exception::NotFound', as 'Net::Kubernetes::Exception', where { $_->code == 404 };
 
@@ -20,6 +22,16 @@ subtype 'Net::Kubernetes::Exception::Conflict', as 'Net::Kubernetes::Exception',
 subtype 'Net::Kubernetes::Exception::BadRequest', as 'Net::Kubernetes::Exception', where { $_->code == 400 };
 
 no Moose::Util::TypeConstraints;
+
+
+package Net::Kunbernetes::Exception::ClientException;
+# ABSTRACT: Exception class for client side errors
+
+require Net::Kubernetes::Exception;
+use Moose;
+
+extends 'Net::Kubernetes::Exception';
+extends 'Throwable::Error';
 
 
 package Net::Kunbernetes::Exception::NotFound;

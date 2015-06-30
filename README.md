@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.10
+version 0.11
 
 # SYNOPSIS
 
@@ -60,37 +60,6 @@ All parameters are optional and have some basic default values (where appropriat
 This method returns a "Namespace" object on which many methods can be called implicitly
 limited to the specified namespace.
 
-## list\_pods(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-
-returns a list of [Net::Kubernetes::Resource::Pod](https://metacpan.org/pod/Net::Kubernetes::Resource::Pod)s
-
-## list\_rc(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-
-returns a list of [Net::Kubernetes::Resource::ReplicationController](https://metacpan.org/pod/Net::Kubernetes::Resource::ReplicationController)s
-
-## list\_replication\_controllers(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-
-returns a list of [Net::Kubernetes::Resource::ReplicationController](https://metacpan.org/pod/Net::Kubernetes::Resource::ReplicationController)s
-
-## list\_secrets(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-
-returns a list of [Net::Kubernetes::Resource::Secret](https://metacpan.org/pod/Net::Kubernetes::Resource::Secret)s
-
-## list\_services(\[label=>{label=>value}\], \[fields=>{field=>value}\])
-
-returns a list of [Net::Kubernetes::Resource::Service](https://metacpan.org/pod/Net::Kubernetes::Resource::Service)s
-
-## create({OBJECT})
-
-Creates a new [Net::Kubernetes::Resource](https://metacpan.org/pod/Net::Kubernetes::Resource) (subtype determined by $BNJECT->{kind})
-
-## create\_from\_file(PATH\_TO\_FILE) (accepts either JSON or YAML files)
-
-Create from file is really just a short cut around something like:
-
-    my $object = YAML::LoadFile(PATH_TO_FILE);
-    $kube->create($object);
-
 ## get\_pod('my-pod-name')
 
 Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod/Net::Kubernetes::Namespace) via $self->get\_namespace('default')
@@ -135,6 +104,5 @@ Please see those modules/websites for more information related to this module.
 # CONSUMES
 
 - [Net::Kubernetes::Role::APIAccess](https://metacpan.org/pod/Net::Kubernetes::Role::APIAccess)
-- [Net::Kubernetes::Role::ResourceCreator](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceCreator)
 - [Net::Kubernetes::Role::ResourceFactory](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceFactory)
 - [Net::Kubernetes::Role::ResourceLister](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceLister)

@@ -2,6 +2,16 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Lots of documentation additions and enhacement
+
+ - Added several sub types of the Net::Kubernetes::Exception
+   to allow for cleaner/easier exception handling.
+
+ - Update $kube to also delegate create and create_from file
+   to the default namespace.
+
+ - Added "build_secret" method to make creating secrets easier
+
 0.10 Sat Jun 27 2015
 
  - Fixed circular dependency between Net::Kubernetes::Resource::Role::HasPods

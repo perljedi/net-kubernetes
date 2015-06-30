@@ -10,6 +10,7 @@ require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Exception;
 use File::Slurp;
+use MIME::Base64 qw(encode_base64);
 use syntax 'try';
 
 with 'Net::Kubernetes::Role::ResourceFactory';
@@ -62,7 +63,6 @@ sub create {
 	my $content = $self->json->encode($object);
 	$content =~ s/(["'])(true|false)\1/$2/g;
 	# /EndHack
-	
 	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $content);
 	my $res = $self->ua->request($req);
 	if ($res->is_success) {
@@ -78,6 +78,58 @@ sub create {
 		}
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>"Error creating resource: ".$message);
 	}
+}
+
+=method build_secret($name, $data)
+
+Builds a Kubernetes secret object with $name. $data is a hash reference whose keys will be keys int the created secret.
+The value for each key should be either a filename (which will be slurped into the secret), or a hashref with the
+keys "type" and "value.  Valid types are "JSON", "YAML" or "String" (anything other that "JSON" or "YAML") will be
+assumed to be of type "String". If either "JSON" or "YAML" the "value" will be serialized out before placing in the
+secret.
+
+  my($new_secret) = $kube->build_secret('donttell', { ssh_public_key => '/home/dave/.ssh/id_rsa.pub', super_sceret_daata => {type => 'JSON', value=>{username=>'Dave', password=>'Imnottelling'}}});
+
+=cut
+
+sub build_secret {
+	my($self, $name, $data) = @_;
+	my($secret) = {
+		kind => 'Secret',
+		apiVersion => 'v1beta3',
+		metadata=>{
+			name => $name,
+		},
+		type => 'Opaque',
+		id => $name,
+		data => {},
+		namespace=>'default',
+	};
+	foreach my $key (keys %$data){
+		if (ref $data->{$key}) {
+			my $value;
+			# Handle serializing data
+			if (uc($data->{$key}{type}) eq 'JSON') {
+				$value = $self->json->encode($data->{$key}{value});
+			}
+			elsif (uc($data->{$key}{type}) eq 'YAML') {
+				$value = YAML::XS::Dump($data->{$key}{value});
+			}
+			else{
+				$value = $data->{$key}{value};
+			}
+			$secret->{data}{$key} = encode_base64($value, "");
+		}
+		else {
+			# if passed a string, it should be a filename
+			if (! -f $data->{$key}) {
+				Net::Kubernetes::Exception->throw(message => "Failed to build secret: $data->{$key} - Not Such file.");
+			}
+			$secret->{data}{$key} = encode_base64(read_file($data->{$key}), "");
+		}
+		
+	}
+	return $self->create($secret);
 }
 
 

@@ -40,7 +40,6 @@ require Net::Kubernetes::Exception;
 
 with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
-with 'Net::Kubernetes::Role::ResourceCreator';
 
 
 =method new - Create a new $kube object
@@ -103,7 +102,7 @@ has 'default_namespace' => (
 	isa        => 'Net::Kubernetes::Namespace',
 	required   => 0,
 	lazy       => 1,
-	handles    => [qw(get_pod get_rc get_replication_controller get_secret get_service)],
+	handles    => [qw(get_pod get_rc get_replication_controller get_secret get_service create create_from_file build_secret)],
 	builder    => '_get_default_namespace',
 );
 
