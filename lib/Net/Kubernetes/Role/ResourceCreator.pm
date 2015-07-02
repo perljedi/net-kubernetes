@@ -88,7 +88,15 @@ keys "type" and "value.  Valid types are "JSON", "YAML" or "String" (anything ot
 assumed to be of type "String". If either "JSON" or "YAML" the "value" will be serialized out before placing in the
 secret.
 
-  my($new_secret) = $kube->build_secret('donttell', { ssh_public_key => '/home/dave/.ssh/id_rsa.pub', super_sceret_daata => {type => 'JSON', value=>{username=>'Dave', password=>'Imnottelling'}}});
+Note that the keys must be valid DNS subdomains (underscore is not allowed).
+
+  my ($new_secret) = $kube->build_secret('donttell', {
+    ssh-public-key => '/home/dave/.ssh/id_rsa.pub',
+    super-secret-data => {
+        type  => 'JSON',
+        value => { username => 'Dave', password => 'Imnottelling' },
+    }
+  });
 
 =cut
 
