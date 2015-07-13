@@ -63,7 +63,7 @@ sub create {
 	my $content = $self->json->encode($object);
 	$content =~ s/(["'])(true|false)\1/$2/g;
 	# /EndHack
-	my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $content);
+    my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $content);
 	my $res = $self->ua->request($req);
 	if ($res->is_success) {
 		return $self->create_resource_object($self->json->decode($res->content));
@@ -102,6 +102,11 @@ Note that the keys must be valid DNS subdomains (underscore is not allowed).
 
 sub build_secret {
 	my($self, $name, $data) = @_;
+	return $self->create($self->_assemble_secret($name, $data));
+}
+
+sub _assemble_secret {
+	my($self, $name, $data) = @_;
 	my($secret) = {
 		kind => 'Secret',
 		apiVersion => 'v1beta3',
@@ -137,7 +142,7 @@ sub build_secret {
 		}
 		
 	}
-	return $self->create($secret);
+	return $secret;
 }
 
 
