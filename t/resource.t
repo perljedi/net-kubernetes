@@ -9,6 +9,10 @@ use Net::Kubernetes;
 use Net::Kubernetes::Namespace;
 use MIME::Base64;
 use Test::Mock::Wrapper;
+use File::Temp qw/tempdir/;
+use File::Slurp qw/read_file/;
+use File::stat;
+
 use vars qw($lwpMock $sut $ns);
 
 shared_examples_for "All Resources" => sub {
@@ -136,7 +140,7 @@ describe "Net::Kubernetes - Secret Objects " => sub {
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"type":"opaque", "data":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Secret", "apiVersion":"v1beta3"}'));
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"type":"opaque", "data":{ "readme": "VGVzdCBmaWxlIGZvciBOZXQ6Okt1YmVybmV0ZXMgdGVzdHMuICBUaGlzIGdldHMgY3JlYXRlZCB3aGVuIHRlc3RpbmcgdGhlCk5ldDo6S3ViZXJuZXRlczo6UmVzb3VyY2U6OlNlY3JldC0+cmVuZGVyIG1ldGhvZCwgYW5kIGlzIHVzZWQgdG8gY29uZmlybSB0aGF0Cml0IHdhcyB3cml0dGVuIG91dCBjb3JyZWN0bHkuCgpJdCBjYW4gYmUgc2FmZWx5IGRlbGV0ZWQuICBZb3Ugc2hvdWxkbid0IGV2ZXIgc2VlIGl0LCBhY3R1YWxseS4K", "super-secret-app-password": "Q2FyZXNzIG9mIFN0ZWVsCg==" }, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Secret", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_rc('mySecret');
 	};
 	before sub {
@@ -151,6 +155,22 @@ describe "Net::Kubernetes - Secret Objects " => sub {
 	it "has data" => sub {
 		ok($sut->data);
 	};
+    describe "rendering secrets to a directory" => sub {
+        my $directory = tempdir(CLEANUP => 1);
+
+        it "should write two files" => sub {
+            is($sut->render(directory => $directory), 2);
+        };
+        it "writes the correct contents to a file" => sub {
+            my $password = read_file("$directory/super-secret-app-password");
+            is($password, "Caress of Steel\n");
+        };
+        it "has the correct size on a larger file" => sub {
+            my $stat = stat("$directory/README") or die "Can't open $directory/README : $!";
+            is($stat->size, 246);
+        };
+        
+    };
 };
 
 describe "Net::Kubernetes - Service Objects " => sub {
