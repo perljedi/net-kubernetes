@@ -166,7 +166,7 @@ describe "Net::Kubernetes - Secret Objects " => sub {
             is($password, "Caress of Steel\n");
         };
         it "has the correct size on a larger file" => sub {
-            my $stat = stat("$directory/README") or die "Can't open $directory/README : $!";
+            my $stat = stat("$directory/readme") or die "Can't open $directory/readme : $!";
             is($stat->size, 246);
         };
         

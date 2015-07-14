@@ -83,12 +83,15 @@ sub create {
 =method build_secret($name, $data)
 
 Builds a Kubernetes secret object with $name. $data is a hash reference whose keys will be keys int the created secret.
-The value for each key should be either a filename (which will be slurped into the secret), or a hashref with the
-keys "type" and "value.  Valid types are "JSON", "YAML" or "String" (anything other that "JSON" or "YAML") will be
-assumed to be of type "String". If either "JSON" or "YAML" the "value" will be serialized out before placing in the
-secret.
 
-Note that the keys must be valid DNS subdomains (underscore is not allowed).
+The value for each key should be either a filename (which will be slurped into
+the secret), or a hashref with the keys "type" and "value".
+
+Valid types are "JSON", "YAML" or "String" (anything other that "JSON" or
+"YAML") will be assumed to be of type "String". If either "JSON" or "YAML" the
+"value" will be serialized out before placing in the secret.
+
+Note that the keys must be valid DNS subdomains (underscore is not allowed) and must be lowercase.
 
   my ($new_secret) = $kube->build_secret('donttell', {
     ssh-public-key => '/home/dave/.ssh/id_rsa.pub',
