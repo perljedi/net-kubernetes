@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.11
+version 0.12
 
 # SYNOPSIS
 
@@ -79,7 +79,7 @@ Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.11" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.12" />
 </div>
 
 # AUTHOR
