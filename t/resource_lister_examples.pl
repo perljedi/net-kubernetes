@@ -88,7 +88,7 @@ shared_examples_for "Service Lister" => sub {
 	it "throws an exception if the call returns an error" => sub {
 		$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
 		dies_ok {
-			$sut->list_rc;
+			$sut->list_services;
 		};
 	};
 	it "doesn't throw an exception if the call succeeds" => sub {
@@ -156,3 +156,4 @@ shared_examples_for "Secret Lister" => sub {
 		cmp_deeply([ $req->uri->query_form ], supersetof('fieldSelector'));
 	};
 };
+

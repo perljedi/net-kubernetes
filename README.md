@@ -79,7 +79,7 @@ Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.10" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.11" />
 </div>
 
 # AUTHOR
