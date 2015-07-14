@@ -2,6 +2,12 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - New resource type "Event"
+
+ - New "list_events" methods
+
+ - Updated documentation on creating secrets
+
 0.11 Tue Jun 30 2015
 
  - Lots of documentation additions and enhacement
