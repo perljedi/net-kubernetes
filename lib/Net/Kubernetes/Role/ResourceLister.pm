@@ -124,6 +124,40 @@ sub list_services {
 	}
 }
 
+=method list_events([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Service>s
+
+=cut
+
+sub list_events {
+	my $self = shift;
+	my(%options);
+	if (ref($_[0])) {
+		%options = %{ $_[0] };
+	}else{
+		%options = @_;
+	}
+
+	my $uri = URI->new($self->path.'/events');
+	my(%form) = ();
+	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
+	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
+	$uri->query_form(%form);
+
+	my $res = $self->ua->request($self->create_request(GET => $uri));
+	if ($res->is_success) {
+		my $event_list = $self->json->decode($res->content);
+		my(@events)=();
+		foreach my $service (@{ $event_list->{items}}){
+			$service->{apiVersion} = $event_list->{apiVersion};
+			push @events, $self->create_resource_object($service, 'Event');
+		}
+		return wantarray ? @events : \@events;
+	}else{
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}
 
 =method list_secrets([label=>{label=>value}], [fields=>{field=>value}])
 
