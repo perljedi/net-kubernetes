@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.12
+version 0.13
 
 # SYNOPSIS
 
@@ -79,7 +79,7 @@ Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.12" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.13" />
 </div>
 
 # AUTHOR
@@ -106,3 +106,9 @@ Please see those modules/websites for more information related to this module.
 - [Net::Kubernetes::Role::APIAccess](https://metacpan.org/pod/Net::Kubernetes::Role::APIAccess)
 - [Net::Kubernetes::Role::ResourceFactory](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceFactory)
 - [Net::Kubernetes::Role::ResourceLister](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceLister)
+
+# CONTRIBUTORS
+
+- Christopher Pruden <cdpruden@liquidweb.com>
+- Dave <dave@perljedi.com>
+- Dave Mueller <dmueller@liquidweb.com>
