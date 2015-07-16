@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Added "logs" access to pod resource object.
+
 0.13 Tue Jul 14 2015
 
  - Housekeeping - Make sure contributors are credited in pod and readme correctly
