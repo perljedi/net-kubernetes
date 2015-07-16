@@ -123,8 +123,9 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "status":{}, "kind":"ReplicationController", "apiVersion":"v1beta3"}'));
-		$sut = $ns->get_rc('myRc');
+		$lwpMock->resetMocks;
+		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myPod$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
+		$sut = $ns->get_pod('myPod');
 	};
 	before sub {
 		$lwpMock->resetCalls;
@@ -132,6 +133,20 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 	
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
+	
+	describe "container logs" => sub {
+		it "has logs" => sub {
+			can_ok($sut, 'logs');
+		};
+		it "fetches logs from kubernetes on demand" => sub {
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{myPod/log$} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
+			$sut->logs;
+			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+			isa_ok($call->[1], 'HTTP::Request');
+			is($call->[1]->method, 'GET');
+			ok(index($call->[1]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+		};
+	}
 };
 
 describe "Net::Kubernetes - Secret Objects " => sub {
@@ -180,7 +195,7 @@ describe "Net::Kubernetes - Service Objects " => sub {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
 		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "status":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Service", "apiVersion":"v1beta3"}'));
-		$sut = $ns->get_rc('mySecret');
+		$sut = $ns->get_service('myService');
 	};
 	before sub {
 		$lwpMock->resetCalls;
