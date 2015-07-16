@@ -12,6 +12,7 @@ use Test::Mock::Wrapper;
 use File::Temp qw/tempdir/;
 use File::Slurp qw/read_file/;
 use File::stat;
+use syntax 'try';
 
 use vars qw($lwpMock $sut $ns);
 
@@ -124,7 +125,7 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
 		$lwpMock->resetMocks;
-		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myPod$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
+		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myPod$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}, "containers":[{}]}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_pod('myPod');
 	};
 	before sub {
@@ -140,11 +141,32 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 		};
 		it "fetches logs from kubernetes on demand" => sub {
 			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{myPod/log$} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
-			$sut->logs;
+			$sut->logs();
 			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
 			isa_ok($call->[1], 'HTTP::Request');
 			is($call->[1]->method, 'GET');
 			ok(index($call->[1]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+		};
+		it "passes container name to kubernetes as a parameter if recieved" => sub {
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{myPod/log\?container=foo$} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
+			$sut->logs(container=>'foo');
+			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+			isa_ok($call->[1], 'HTTP::Request');
+			is($call->[1]->method, 'GET');
+			ok(index($call->[1]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+		};
+		it "throws client side exception if called on a multi-container pod without a container argument" => sub {
+			push @{ $sut->spec->{containers} }, {};
+			try{
+				$sut->logs();
+				fail("Should have thrown excpetion");
+			}
+			catch(Net::Kunbernetes::Exception::ClientException $e) {
+				# pass('Horay')
+			}
+			catch ($e) {
+				fail("Should have thrown Net::Kunbernetes::Exception::ClientException, not '$e'");
+			}
 		};
 	}
 };
