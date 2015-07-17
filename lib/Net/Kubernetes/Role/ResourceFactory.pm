@@ -8,6 +8,7 @@ require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
 require Net::Kubernetes::Resource::Event;
+require Net::Kubernetes::Resource::Node;
 
 sub create_resource_object {
 	my($self, $object, $kind) = @_;

@@ -126,7 +126,7 @@ sub list_services {
 
 =method list_events([label=>{label=>value}], [fields=>{field=>value}])
 
-returns a list of L<Net::Kubernetes::Resource::Service>s
+returns a list of L<Net::Kubernetes::Resource::Event>s
 
 =cut
 

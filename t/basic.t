@@ -50,11 +50,34 @@ describe "Net::Kubernetes" => sub {
 				$sut->get_namespace('myNamespace');
 			};
 		};
-		it "returns a new Net::Kubernetes object set to the requested namespace" => sub {
+		it "returns a new Net::Kubernetes::Namespace object set to the requested namespace" => sub {
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "metadata":{"selfLink":"/path/to/me"}}'));
 			my $res = $sut->get_namespace('myNamespace');
 			isa_ok($res, 'Net::Kubernetes::Namespace');
 			is($res->namespace, 'myNamespace');
+		};
+	};
+	describe "list_nodes" => sub {
+		it "can get a list of nodes" => sub {
+			can_ok($sut, 'list_nodes');
+		};
+		it "throws an exception if the call returns an error" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
+			dies_ok {
+				$sut->list_nodes();
+			};
+		};
+		it "doesn't throw an exception if the call succeeds" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "metadata":{"selfLink":"/path/to/me"}}'));
+			lives_ok {
+				$sut->list_nodes();
+			};
+		};
+		it "returns a list of Net::Kubernetes::Node objects" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{ "kind": "NodeList", "apiVersion": "v1beta3", "metadata":{ "selfLink": "/api/v1beta3/nodes", "resourceVersion": "60116" }, "items": [ { "metadata": { "name": "name", "selfLink": "/api/v1beta3/nodes/name", "labels": { "kubernetes.io/hostname": "name" } }, "spec": { "externalID": "name" }, "status": { "field": "woot" } }] }'));
+			my(@nodes) = $sut->list_nodes();
+			is(scalar(@nodes), 1);
+			isa_ok($nodes[0], 'Net::Kubernetes::Resource::Node');
 		};
 	};
 };

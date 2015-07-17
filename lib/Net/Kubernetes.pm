@@ -123,6 +123,41 @@ sub get_namespace {
 	}
 }
 
+=method list_nodes([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Node>s
+
+=cut
+
+sub list_nodes {
+	my $self = shift;
+	my(%options);
+	if (ref($_[0])) {
+		%options = %{ $_[0] };
+	}else{
+		%options = @_;
+	}
+
+	my $uri = URI->new($self->path.'/nodes');
+	my(%form) = ();
+	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
+	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
+	$uri->query_form(%form);
+
+	my $res = $self->ua->request($self->create_request(GET => $uri));
+	if ($res->is_success) {
+		my $event_list = $self->json->decode($res->content);
+		my(@events)=();
+		foreach my $service (@{ $event_list->{items}}){
+			$service->{apiVersion} = $event_list->{apiVersion};
+			push @events, $self->create_resource_object($service, 'Node');
+		}
+		return wantarray ? @events : \@events;
+	}else{
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}
+
 sub _get_default_namespace {
 	my($self) = @_;
 	return $self->get_namespace('default');
