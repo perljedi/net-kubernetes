@@ -194,6 +194,41 @@ sub list_secrets {
 	}
 }
 
+=method list_endpoints([label=>{label=>value}], [fields=>{field=>value}])
+
+returns a list of L<Net::Kubernetes::Resource::Endpoint>s
+
+=cut
+
+sub list_endpoints {
+	my $self = shift;
+	my(%options);
+	if (ref($_[0])) {
+		%options = %{ $_[0] };
+	}else{
+		%options = @_;
+	}
+
+	my $uri = URI->new($self->path.'/enpoints');
+	my(%form) = ();
+	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
+	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
+	$uri->query_form(%form);
+
+	my $res = $self->ua->request($self->create_request(GET => $uri));
+	if ($res->is_success) {
+		my $point_list = $self->json->decode($res->content);
+		my(@points)=();
+		foreach my $point (@{ $point_list->{items} }){
+			$point->{apiVersion} = $point_list->{apiVersion};
+			push @points, $self->create_resource_object($point, 'Endpoint');
+		}
+		return wantarray ? @points : \@points;
+	}else{
+		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
+	}
+}
+
 sub _build_selector_from_hash {
 	my($self, $select_hash) = @_;
 	my(@selectors);

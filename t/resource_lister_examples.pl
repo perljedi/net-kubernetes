@@ -43,6 +43,47 @@ shared_examples_for "Pod Lister" => sub{
 	};
 };
 
+shared_examples_for "Endpoint Lister" => sub{
+	before sub {
+		$sut = Net::Kubernetes->new;
+	};
+	it "can get a list of pods" => sub {
+		can_ok($sut, 'list_endpoints');
+	};
+	it "throws an exception if the call returns an error" => sub {
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
+		dies_ok {
+			$sut->list_endpoints;
+		};
+	};
+	it "doesn't throw an exception if the call succeeds" => sub {
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3"}'));
+		lives_ok {
+			$sut->list_endpoints;
+		};
+	};
+	it "returns an array of pods" => sub {
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"metadata":{"selfLink":"/path/to/me"}, "subsets":[{}]}]}'));
+		my $res = $sut->list_endpoints;
+		isa_ok($res, 'ARRAY');
+		isa_ok($res->[0], 'Net::Kubernetes::Resource::Endpoint');
+	};
+	it "includes label selector in query if labels are passed in" => sub{
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+		$sut->list_endpoints(labels=>{name=>'my-pod'});
+		$lwpMock->verify('request')->once;
+		my $req = $lwpMock->getCallsTo('request')->[0][1];
+		cmp_deeply([ $req->uri->query_form ], supersetof('labelSelector'));
+	};
+	it "includes field selector in query if fields are passed in" => sub{
+		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+		$sut->list_endpoints(fields=>{'status.phase'=>'Running'});
+		$lwpMock->verify('request')->once;
+		my $req = $lwpMock->getCallsTo('request')->[0][1];
+		cmp_deeply([ $req->uri->query_form ], supersetof('fieldSelector'));
+	};
+};
+
 shared_examples_for "Replication Controller Lister" => sub {
 	it "can get a list of pods" => sub {
 		can_ok($sut, 'list_rc');

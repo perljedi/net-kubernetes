@@ -5,5 +5,10 @@ use Moose;
 
 extends 'Net::Kubernetes::Resource';
 
+has subsets => (
+    is    => 'ro',
+    isa   => 'ArrayRef[HashRef]',
+);
+
 
 return 42;

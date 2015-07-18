@@ -24,6 +24,7 @@ describe "Net::Kubernetes" => sub {
 	};
 
 	it_should_behave_like "Pod Lister";
+	it_should_behave_like "Endpoint Lister";
 	it_should_behave_like "Replication Controller Lister";
 	it_should_behave_like "Service Lister";
 	it_should_behave_like "Secret Lister";
