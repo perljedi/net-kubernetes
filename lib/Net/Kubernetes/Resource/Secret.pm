@@ -50,6 +50,7 @@ sub render {
             {
                 err_mode   => 'croak',
                 no_clobber => !$args{force},
+				binmode => ':raw',
             },
             decode_base64 ${$self->data}{$file}
         );
