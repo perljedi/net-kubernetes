@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
 
  - Added "logs" access to pod resource object.
 
+ - Added "Node" resource type and "list_nodes" method.
+
 0.13 Tue Jul 14 2015
 
  - Housekeeping - Make sure contributors are credited in pod and readme correctly
