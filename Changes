@@ -6,6 +6,10 @@ Revision history for {{$dist->name}}
 
  - Added "Node" resource type and "list_nodes" method.
 
+ - Added "Endpoint" resource type and "list_endpoints" method.
+
+ - Fixed broken tests for win32 systems.
+
 0.13 Tue Jul 14 2015
 
  - Housekeeping - Make sure contributors are credited in pod and readme correctly
