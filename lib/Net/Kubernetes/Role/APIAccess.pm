@@ -17,11 +17,18 @@ has url => (
 	default  => 'http://localhost:8080',
 );
 
+has api_version => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 1,
+);
+
 has base_path => (
 	is       => 'ro',
 	isa      => 'Str',
 	required => 1,
-	default  => '/api/v1beta3',
+	lazy     => 1,
+	builder  => '_create_default_base_path'
 );
 
 has password => (
@@ -74,8 +81,23 @@ around BUILDARGS => sub {
 		$input{token} = do{ local $/; <$fh>};
 		close($fh);
 	}
+	if(! exists $input{api_version}){
+		if(exists $input{base_path}){
+			if($input{base_path} =~ m{/api/(v[^/]+)}){
+				$input{api_version} = $1;
+			}
+		}
+		else {
+			$input{api_version}='v1';
+		}
+	}
 	return $class->$orig(%input);
 };
+
+sub _create_default_base_path {
+	my($self) = @_;
+	return '/api/'.$self->api_version;
+}
 
 sub path {
 	my($self) = @_;

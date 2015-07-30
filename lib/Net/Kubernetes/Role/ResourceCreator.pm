@@ -37,7 +37,7 @@ sub create_from_file {
 	if (! -f $file) {
 		Throwable::Error->throw(message=>"Could not read file: $file");
 	}
-	
+
 	my $object;
 	if ($file =~ /\.ya?ml$/i){
 		$object = YAML::XS::LoadFile($file);
@@ -45,13 +45,13 @@ sub create_from_file {
 	else{
 		$object = $self->json->decode(scalar(read_file($file)));
 	}
-	
+
 	return $self->create($object);
 }
 
 sub create {
 	my($self, $object) = @_;
-	
+
 	# This is an ugly hack and I am not proud of it.
 	# That being said, I have bigger fish to fry right now
 	# This is here because kubernetes will not accept "true"
@@ -112,7 +112,7 @@ sub _assemble_secret {
 	my($self, $name, $data) = @_;
 	my($secret) = {
 		kind => 'Secret',
-		apiVersion => 'v1beta3',
+		apiVersion => $self->api_version,
 		metadata=>{
 			name => $name,
 		},
@@ -143,7 +143,7 @@ sub _assemble_secret {
 			}
 			$secret->{data}{$key} = encode_base64(read_file($data->{$key}), "");
 		}
-		
+
 	}
 	return $secret;
 }
