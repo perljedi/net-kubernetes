@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.15 Thu Jul 30 2015
+
  - Update for compatibility with kubernetes v1 release
 
 0.14 Sat Jul 18 2015
