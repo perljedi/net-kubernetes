@@ -6,23 +6,23 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.14
+version 0.15
 
 # SYNOPSIS
 
     my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
     my $pod_list = $kube->list_pods();
-    
+
     my $nginx_pod = $kube->create_from_file('kubernetes/examples/pod.yaml');
-    
+
     my $ns = $kube->get_namespace('default');
-    
+
     my $services = $ns->list_services;
-    
+
     my $pod = $ns->get_pod('my-pod');
-    
+
     $pod->delete;
-    
+
     my $other_pod = $ns->create_from_file('./my-pod.yaml');
 
 # METHODS
@@ -83,7 +83,7 @@ returns a list of [Net::Kubernetes::Resource::Node](https://metacpan.org/pod/Net
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.14" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.15" />
 </div>
 
 # AUTHOR
