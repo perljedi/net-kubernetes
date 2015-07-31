@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.16
+version 0.17
 
 # SYNOPSIS
 
@@ -83,7 +83,7 @@ returns a list of [Net::Kubernetes::Resource::Node](https://metacpan.org/pod/Net
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.16" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.17" />
 </div>
 
 # AUTHOR

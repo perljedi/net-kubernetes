@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Remove errant debuging statement
+
+ - Add "scale" method to Replication Controller
+
 0.16 Fri Jul 31 2015
 
  - Bug fix in get_pods to correctly AND together labels in the label selector

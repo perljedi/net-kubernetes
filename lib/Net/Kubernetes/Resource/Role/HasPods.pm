@@ -15,7 +15,6 @@ sub get_pods {
 	my($self) = @_;
 	my $uri = URI->new_abs("../pods", $self->path);
 	$uri->query_form(labelSelector=>$self->_build_selector_from_hash($self->spec->{selector}));
-	print "Fetching pods with $uri\n";
 	my $res = $self->ua->request($self->create_request(GET => $uri));
 	if ($res->is_success) {
 		my $pod_list = $self->json->decode($res->content);
