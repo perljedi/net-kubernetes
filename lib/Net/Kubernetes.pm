@@ -12,7 +12,7 @@ require Net::Kubernetes::Exception;
 
 =head1 SYNOPSIS
 
-  my $kube = Net::Kubernets->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
+  my $kube = Net::Kubernetes->new(url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
   my $pod_list = $kube->list_pods();
 
   my $nginx_pod = $kube->create_from_file('kubernetes/examples/pod.yaml');
