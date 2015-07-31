@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.16 Fri Jul 31 2015
+
  - Bug fix in get_pods to correctly AND together labels in the label selector
 
  - Typo fix in POD
