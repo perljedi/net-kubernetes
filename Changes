@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Bug fix in get_pods to correctly AND together labels in the label selector
+
+ - Typo fix in POD
+
 0.15 Thu Jul 30 2015
 
  - Update for compatibility with kubernetes v1 release
@@ -66,9 +70,9 @@ Revision history for {{$dist->name}}
 0.08 Thu Jun 25 2015
 
  - Added new method to resource controller to fetch its pods
- 
+
  - Added test cases, refactored some tests to re-use code
- 
+
  - Removed references to Data::Dumper that were only sued
    for debugging.
 
@@ -106,7 +110,7 @@ Revision history for {{$dist->name}}
  - New authentication option: "Token"
       provide a token to use when authentication to the kubernetes apiserver
       may be provided as a string, path to a file, or a ref to a file handle
-    
+
  - Resource method "update"
       Any reosurce object may be modified (using the provided attributes).
       after making changes, call $resource->update; to send those changes
