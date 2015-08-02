@@ -3,13 +3,14 @@ package Net::Kubernetes::Role::ResourceFactory;
 
 use Moose::Role;
 use MooseX::Aliases;
-require Net::Kubernetes::Resource::Service;
+require Net::Kubernetes::Resource::Endpoint;
+require Net::Kubernetes::Resource::Event;
+require Net::Kubernetes::Resource::Node;
 require Net::Kubernetes::Resource::Pod;
 require Net::Kubernetes::Resource::ReplicationController;
 require Net::Kubernetes::Resource::Secret;
-require Net::Kubernetes::Resource::Event;
-require Net::Kubernetes::Resource::Node;
-require Net::Kubernetes::Resource::Endpoint;
+require Net::Kubernetes::Resource::Service;
+require Net::Kubernetes::Resource::ServiceAccount;
 
 sub create_resource_object {
 	my($self, $object, $kind) = @_;

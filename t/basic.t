@@ -81,6 +81,29 @@ describe "Net::Kubernetes" => sub {
 			isa_ok($nodes[0], 'Net::Kubernetes::Resource::Node');
 		};
 	};
+	describe "list_service_accounts" => sub {
+		it "can get a list of nodes" => sub {
+			can_ok($sut, 'list_nodes');
+		};
+		it "throws an exception if the call returns an error" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
+			dies_ok {
+				$sut->list_service_accounts();
+			};
+		};
+		it "doesn't throw an exception if the call succeeds" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "metadata":{"selfLink":"/path/to/me"}}'));
+			lives_ok {
+				$sut->list_service_accounts();
+			};
+		};
+		it "returns a list of Net::Kubernetes::Node objects" => sub {
+			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{ "kind": "NodeList", "apiVersion": "v1beta3", "metadata":{ "selfLink": "/api/v1beta3/nodes", "resourceVersion": "60116" }, "items": [ { "metadata": { "name": "name", "selfLink": "/api/v1beta3/nodes/name", "labels": { "kubernetes.io/hostname": "name" } }, "secrets": [{ "externalID": "name" }], "imagePullSecrets":[], "status": { "field": "woot" } }] }'));
+			my(@nodes) = $sut->list_service_accounts();
+			is(scalar(@nodes), 1);
+			isa_ok($nodes[0], 'Net::Kubernetes::Resource::ServiceAccount');
+		};
+	};
 };
 
 runtests;
