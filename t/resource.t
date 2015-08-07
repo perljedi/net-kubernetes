@@ -48,12 +48,12 @@ shared_examples_for "Stateful Resources" => sub {
 	it "has a status" => sub {
 		ok($sut->status);
 	};
-	
+
 	describe "Refresh" => sub {
 		it "Can be refreshed" => sub {
 			can_ok($sut, 'refresh');
 		};
-		
+
 		it "makes a GET request to its selfLink" => sub {
 			$sut->refresh();
 			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
@@ -72,7 +72,7 @@ shared_examples_for "Pod Container" => sub {
 		$sut->get_pods();
 		my($call) = $lwpMock->verify('request')->once->getCalls->[0];
 		isa_ok($call->[1], 'HTTP::Request');
-		is($call->[1]->method, 'GET');			
+		is($call->[1]->method, 'GET');
 	};
 	it "Requests relative to its 'selfLink'" => sub {
 		$sut->get_pods();
@@ -91,7 +91,7 @@ describe "Net::Kubernetes - All Resource Objects" => sub {
 	before sub {
 		$lwpMock->resetCalls;
 	};
-	
+
 	it_should_behave_like "All Resources";
 };
 
@@ -107,15 +107,15 @@ describe "Net::Kubernetes - Replication Controller Objects " => sub {
 	before sub {
 		$lwpMock->resetCalls;
 	};
-	
+
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
 	it_should_behave_like "Pod Container";
-	
+
 	it "has a spec" => sub {
 		ok($sut->spec);
 	};
-	
+
 };
 
 describe "Net::Kubernetes - Pod Objects " => sub {
@@ -131,10 +131,10 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 	before sub {
 		$lwpMock->resetCalls;
 	};
-	
+
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
-	
+
 	describe "container logs" => sub {
 		it "has logs" => sub {
 			can_ok($sut, 'logs');
@@ -171,6 +171,56 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 	}
 };
 
+describe "Net::Kubernetes - Node Objects " => sub {
+	my $kube;
+	before all => sub {
+		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
+		lives_ok {
+			$kube = Net::Kubernetes->new(url => 'http://localhost:8080', api_version => 'v1');
+		};
+		$lwpMock->resetMocks;
+		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myNode$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
+		$sut = $kube->get_node('myNode');
+	};
+	before sub {
+		$lwpMock->resetCalls;
+	};
+
+	it_should_behave_like "All Resources";
+	it_should_behave_like "Stateful Resources";
+
+	describe "get_pods" => sub {
+		it "has pods" => sub {
+			can_ok($sut, 'get_pods');
+		};
+		it "gets a list of pods from kubernetes on demand" => sub {
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			$sut->get_pods();
+			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+		};
+		it "uses nodeName for v1 api" => sub {
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			$sut->get_pods();
+			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+			ok($call->[1]->uri =~ m/nodeName/);
+		};
+		it "uses host for v1beta3 api" => sub {
+			$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
+			lives_ok {
+				$kube = Net::Kubernetes->new(url => 'http://localhost:8080', api_version => 'v1');
+			};
+			$lwpMock->resetMocks;
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myNode$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
+			$sut = $kube->get_node('myNode');
+			$lwpMock->resetCalls;
+			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			$sut->get_pods();
+			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+			ok($call->[1]->uri =~ m/host/);
+		}
+	};
+};
+
 describe "Net::Kubernetes - Secret Objects " => sub {
 	before all => sub {
 		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
@@ -183,9 +233,9 @@ describe "Net::Kubernetes - Secret Objects " => sub {
 	before sub {
 		$lwpMock->resetCalls;
 	};
-	
+
 	it_should_behave_like "All Resources";
-	
+
 	it "has a type" => sub {
 		ok($sut->type);
 	};
@@ -206,7 +256,7 @@ describe "Net::Kubernetes - Secret Objects " => sub {
             my $stat = stat("$directory/readme") or die "Can't open $directory/readme : $!";
             is($stat->size, 246);
         };
-        
+
     };
 };
 
@@ -222,7 +272,7 @@ describe "Net::Kubernetes - Service Objects " => sub {
 	before sub {
 		$lwpMock->resetCalls;
 	};
-	
+
 	it_should_behave_like "All Resources";
 	it_should_behave_like "Stateful Resources";
 	it_should_behave_like "Pod Container";

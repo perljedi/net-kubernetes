@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::Fatal qw(lives_ok dies_ok);
 use Net::Kubernetes;
 use Test::Mock::Wrapper;
-use vars qw($lwpMock $sut);
+use vars qw($lwpMock $sut %config);
 
 describe "Net::Kubernetes" => sub {
 	before sub {
@@ -58,21 +58,10 @@ describe "Net::Kubernetes" => sub {
 		};
 	};
 	describe "list_nodes" => sub {
-		it "can get a list of nodes" => sub {
-			can_ok($sut, 'list_nodes');
+		before sub {
+			$config{method} = 'list_nodes';
 		};
-		it "throws an exception if the call returns an error" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
-			dies_ok {
-				$sut->list_nodes();
-			};
-		};
-		it "doesn't throw an exception if the call succeeds" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "metadata":{"selfLink":"/path/to/me"}}'));
-			lives_ok {
-				$sut->list_nodes();
-			};
-		};
+		it_should_behave_like "all_list_methods";
 		it "returns a list of Net::Kubernetes::Node objects" => sub {
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{ "kind": "NodeList", "apiVersion": "v1beta3", "metadata":{ "selfLink": "/api/v1beta3/nodes", "resourceVersion": "60116" }, "items": [ { "metadata": { "name": "name", "selfLink": "/api/v1beta3/nodes/name", "labels": { "kubernetes.io/hostname": "name" } }, "spec": { "externalID": "name" }, "status": { "field": "woot" } }] }'));
 			my(@nodes) = $sut->list_nodes();
@@ -81,21 +70,10 @@ describe "Net::Kubernetes" => sub {
 		};
 	};
 	describe "list_service_accounts" => sub {
-		it "can get a list of nodes" => sub {
-			can_ok($sut, 'list_nodes');
+		before sub {
+			$config{method} = 'list_service_accounts';
 		};
-		it "throws an exception if the call returns an error" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(401, "you suck"));
-			dies_ok {
-				$sut->list_service_accounts();
-			};
-		};
-		it "doesn't throw an exception if the call succeeds" => sub {
-			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "metadata":{"selfLink":"/path/to/me"}}'));
-			lives_ok {
-				$sut->list_service_accounts();
-			};
-		};
+		it_should_behave_like "all_list_methods";
 		it "returns a list of Net::Kubernetes::Node objects" => sub {
 			$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{ "kind": "NodeList", "apiVersion": "v1beta3", "metadata":{ "selfLink": "/api/v1beta3/nodes", "resourceVersion": "60116" }, "items": [ { "metadata": { "name": "name", "selfLink": "/api/v1beta3/nodes/name", "labels": { "kubernetes.io/hostname": "name" } }, "secrets": [{ "externalID": "name" }], "imagePullSecrets":[], "status": { "field": "woot" } }] }'));
 			my(@nodes) = $sut->list_service_accounts();
