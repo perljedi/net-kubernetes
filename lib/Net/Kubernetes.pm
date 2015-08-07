@@ -31,12 +31,11 @@ require Net::Kubernetes::Exception;
 
 <h2>Build Status</h2>
 
-<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.17" />
+<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.18" />
 
 =end html
 
 =cut
-
 
 with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';

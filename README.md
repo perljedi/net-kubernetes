@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.17
+version 0.18
 
 # SYNOPSIS
 
@@ -80,10 +80,14 @@ Delegates automatically to [Net::Kubernetes::Namespace](https://metacpan.org/pod
 
 returns a list of [Net::Kubernetes::Resource::Node](https://metacpan.org/pod/Net::Kubernetes::Resource::Node)s
 
+## list\_service\_accounts(\[label=>{label=>value}\], \[fields=>{field=>value}\])
+
+returns a list of [Net::Kubernetes::Resource::Service](https://metacpan.org/pod/Net::Kubernetes::Resource::Service)s
+
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.17" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.18" />
 </div>
 
 # AUTHOR
@@ -109,6 +113,7 @@ Please see those modules/websites for more information related to this module.
 
 - [Net::Kubernetes::Role::APIAccess](https://metacpan.org/pod/Net::Kubernetes::Role::APIAccess)
 - [Net::Kubernetes::Role::ResourceFactory](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceFactory)
+- [Net::Kubernetes::Role::ResourceFetcher](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceFetcher)
 - [Net::Kubernetes::Role::ResourceLister](https://metacpan.org/pod/Net::Kubernetes::Role::ResourceLister)
 
 # CONTRIBUTORS

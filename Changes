@@ -2,6 +2,14 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Add ServiceAccount resource, and list method to fetch it
+
+ - Add get_node method
+
+ - Add get_pods method to node object
+
+ - Refactor some tests to reduce code duplication
+
 0.17 Fri Jul 31 2015
 
  - Remove errant debuging statement
