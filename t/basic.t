@@ -9,7 +9,6 @@ use Net::Kubernetes;
 use Test::Mock::Wrapper;
 use vars qw($lwpMock $sut);
 
-
 describe "Net::Kubernetes" => sub {
 	before sub {
 		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');

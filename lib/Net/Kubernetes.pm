@@ -40,7 +40,7 @@ require Net::Kubernetes::Exception;
 
 with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
-
+with 'Net::Kubernetes::Role::ResourceFetcher';
 
 =method new - Create a new $kube object
 
@@ -146,16 +146,22 @@ sub list_nodes {
 
 	my $res = $self->ua->request($self->create_request(GET => $uri));
 	if ($res->is_success) {
-		my $event_list = $self->json->decode($res->content);
-		my(@events)=();
-		foreach my $service (@{ $event_list->{items}}){
-			$service->{apiVersion} = $event_list->{apiVersion};
-			push @events, $self->create_resource_object($service, 'Node');
+		my $node_list = $self->json->decode($res->content);
+		my(@nodes)=();
+		foreach my $node (@{ $node_list->{items}}){
+			$node->{apiVersion} = $node_list->{apiVersion};
+			push @nodes, $self->create_resource_object($node, 'Node');
 		}
-		return wantarray ? @events : \@events;
+		return wantarray ? @nodes : \@nodes;
 	}else{
 		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$res->message);
 	}
+}
+
+sub get_node {
+	my($self, $name) = @_;
+	Net::Kubernetes::Exception->throw(message=>"Missing required parameter 'name'") if(! defined $name || ! length $name);
+	return $self->get_resource_by_name($name, 'nodes');
 }
 
 =method list_service_accounts([label=>{label=>value}], [fields=>{field=>value}])

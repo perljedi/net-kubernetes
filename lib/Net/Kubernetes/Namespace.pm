@@ -8,7 +8,7 @@ use syntax 'try';
 has namespace => (
 	is       => 'ro',
 	isa      => 'Str',
-	required => 0,	
+	required => 0,
 );
 
 has _namespace_data => (
@@ -21,6 +21,8 @@ with 'Net::Kubernetes::Role::APIAccess';
 with 'Net::Kubernetes::Role::ResourceLister';
 with 'Net::Kubernetes::Role::ResourceCreator';
 with 'Net::Kubernetes::Role::ResourceFactory';
+with 'Net::Kubernetes::Role::ResourceFetcher';
+with 'Net::Kubernetes::Role::SecretBuilder';
 
 =method $ns->get_pod('my-pod-name')
 
@@ -57,22 +59,4 @@ sub get_replication_controller {
 }
 alias get_rc => 'get_replication_controller';
 
-
-sub get_resource_by_name {
-	my($self, $name, $type) = @_;
-	my($res) = $self->ua->request($self->create_request(GET => $self->path.'/'.$type.'/'.$name));
-	if ($res->is_success) {
-		return $self->create_resource_object($self->json->decode($res->content));
-	}
-	else {
-		my $message;
-		try{
-			my $obj = $self->json->decode($res->content);
-			$message = $obj->{message};
-		}
-		catch($e) {
-			$message = $res->message;
-		}
-		Net::Kubernetes::Exception->throw(code=>$res->code, message=>$message);
-	}
-}
+return 42;
