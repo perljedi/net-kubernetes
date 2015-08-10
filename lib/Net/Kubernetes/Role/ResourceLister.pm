@@ -209,7 +209,7 @@ sub list_endpoints {
 		%options = @_;
 	}
 
-	my $uri = URI->new($self->path.'/enpoints');
+	my $uri = URI->new($self->path.'/endpoints');
 	my(%form) = ();
 	$form{labelSelector}=$self->_build_selector_from_hash($options{labels}) if (exists $options{labels});
 	$form{fieldSelector}=$self->_build_selector_from_hash($options{fields}) if (exists $options{fields});
