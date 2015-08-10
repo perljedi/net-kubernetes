@@ -31,7 +31,7 @@ require Net::Kubernetes::Exception;
 
 <h2>Build Status</h2>
 
-<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.18" />
+<img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.19" />
 
 =end html
 

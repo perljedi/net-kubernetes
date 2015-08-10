@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Correct cirtical URL typo in list_endpoints
+
 0.18 Fri Aug 07 2015
 
  - Add ServiceAccount resource, and list method to fetch it
