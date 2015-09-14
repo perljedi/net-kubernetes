@@ -10,5 +10,9 @@ has subsets => (
     isa   => 'ArrayRef[HashRef]',
 );
 
+augment as_hashref => sub {
+    my($self) = @_;
+    return ( subsets =>$self->subsets );
+};
 
 return 42;

@@ -61,6 +61,7 @@ sub update {
 sub as_hashref
 {
 	my($self) = @_;
+	
 	return {
 		inner(),
 		apiVersion=>$self->api_version,

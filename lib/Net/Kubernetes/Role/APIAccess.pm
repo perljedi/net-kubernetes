@@ -106,7 +106,7 @@ sub path {
 
 sub _build_lwp_agent {
 	my $self = shift;
-	my $ua = LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.01');
+	my $ua = LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.20');
 	$ua->ssl_opts(verify_hostname=>0);
 	return $ua;
 }
