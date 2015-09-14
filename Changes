@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.20 Mon Sep 14 2015
+
  - Update serialized version of endpoitn resource
  
  - Update the UA string in http headers
