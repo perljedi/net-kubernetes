@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Update serialized version of endpoitn resource
+ 
+ - Update the UA string in http headers
+
 0.19 Mon Aug 10 2015
 
  - Correct cirtical URL typo in list_endpoints
