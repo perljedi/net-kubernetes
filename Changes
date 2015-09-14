@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+ - Require Test::Mock::Wrapper v0.17 or better for tests
+   (https://rt.cpan.org/Public/Bug/Display.html?id=107091)
+
 0.20 Mon Sep 14 2015
 
  - Update serialized version of endpoitn resource

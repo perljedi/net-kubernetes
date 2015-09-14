@@ -2,11 +2,11 @@
 
 Net::Kubernetes - An object oriented interface to the REST API's provided by kubernetes
 
-[![Build Status](https://travis-ci.org/perljedi/net-kubernetes.png?branch=release-0.10)](https://travis-ci.org/perljedi/net-kubernetes)
+[![Build Status](https://travis-ci.org/perljedi/net-kubernetes.png?branch=master)](https://travis-ci.org/perljedi/net-kubernetes)
 
 # VERSION
 
-version 0.20
+version 0.21
 
 # SYNOPSIS
 
@@ -87,7 +87,7 @@ returns a list of [Net::Kubernetes::Resource::Service](https://metacpan.org/pod/
 <div>
     <h2>Build Status</h2>
 
-    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.19" />
+    <img src="https://travis-ci.org/perljedi/net-kubernetes.svg?branch=release-0.21" />
 </div>
 
 # AUTHOR
