@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.21
+version 0.22
 
 # SYNOPSIS
 
@@ -55,6 +55,12 @@ All parameters are optional and have some basic default values (where appropriat
     from which to read the token (like /var/run/secrets/kubernetes.io/serviceaccount/token from within a pod), or a reference
     to a file handle (from which to read the token).
 
+- ssl\_cert\_file, ssl\_key\_file, ssl\_ca\_file
+
+    This there options passed into new will cause Net::Kubernetes in inlcude SSL client certs to requests to the kuberernetes
+    API server for authentication.  There are basically just a passthrough to the underlying LWP::UserAgent used to handle the 
+    api requests.
+
 ## get\_namespace("myNamespace");
 
 This method returns a "Namespace" object on which many methods can be called implicitly
@@ -92,7 +98,7 @@ returns a list of [Net::Kubernetes::Resource::Service](https://metacpan.org/pod/
 
 # AUTHOR
 
-Dave Mueller <dave@perljedi.com>
+Dave Mueller &lt;dave@perljedi.com>
 
 # COPYRIGHT AND LICENSE
 
@@ -118,6 +124,6 @@ Please see those modules/websites for more information related to this module.
 
 # CONTRIBUTORS
 
-- Christopher Pruden <cdpruden@liquidweb.com>
-- Dave <dave@perljedi.com>
-- Dave Mueller <dmueller@liquidweb.com>
+- Christopher Pruden &lt;cdpruden@liquidweb.com>
+- Dave &lt;dave@perljedi.com>
+- Dave Mueller &lt;dmueller@liquidweb.com>

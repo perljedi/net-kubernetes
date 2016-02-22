@@ -71,6 +71,12 @@ An authentication token to be used to access the apiserver.  This may be provide
 from which to read the token (like /var/run/secrets/kubernetes.io/serviceaccount/token from within a pod), or a reference
 to a file handle (from which to read the token).
 
+=item ssl_cert_file, ssl_key_file, ssl_ca_file
+
+This there options passed into new will cause Net::Kubernetes in inlcude SSL client certs to requests to the kuberernetes
+API server for authentication.  There are basically just a passthrough to the underlying LWP::UserAgent used to handle the 
+api requests.
+
 =back
 
 =method get_namespace("myNamespace");

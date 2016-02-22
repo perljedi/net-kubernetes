@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  - Add support for SSL client certificate based
+    authhenitcation.
+
+  - Minor documentation tweaks
+
 0.21 Mon Sep 14 2015
 
  - Require Test::Mock::Wrapper v0.17 or better for tests
