@@ -48,6 +48,7 @@ has ua => (
 	isa      => 'LWP::UserAgent',
 	required => 1,
 	builder  => '_build_lwp_agent',
+    lazy     => 1,
 );
 
 has token => (
@@ -62,6 +63,30 @@ has 'json' => (
     required => 1,
     lazy     => 1,
     builder  => '_build_json',
+);
+
+has 'ssl_cert_file' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
+has 'ssl_key_file' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
+has 'ssl_ca_file' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
+has 'ssl_verify' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
 );
 
 around BUILDARGS => sub {
@@ -107,7 +132,14 @@ sub path {
 sub _build_lwp_agent {
 	my $self = shift;
 	my $ua = LWP::UserAgent->new(agent=>'net-kubernetes-perl/0.20');
-	$ua->ssl_opts(verify_hostname=>0);
+    if($self->ssl_cert_file){
+        $ua = LWP::UserAgent->new(ssl_opts => {
+            verify_hostname => $self->ssl_verify,
+            SSL_cert_file => $self->ssl_cert_file,
+            SSL_key_file  => $self->ssl_key_file,
+            SSL_ca_file   => $self->ssl_ca_file,
+        });
+    }
 	return $ua;
 }
 
