@@ -6,7 +6,7 @@ Net::Kubernetes - An object oriented interface to the REST API's provided by kub
 
 # VERSION
 
-version 0.22
+version 0.23
 
 # SYNOPSIS
 
@@ -127,3 +127,4 @@ Please see those modules/websites for more information related to this module.
 - Christopher Pruden &lt;cdpruden@liquidweb.com>
 - Dave &lt;dave@perljedi.com>
 - Dave Mueller &lt;dmueller@liquidweb.com>
+- Kevin Johnson &lt;kcavemanj@gmail.com>
