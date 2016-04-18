@@ -42,6 +42,14 @@ shared_examples_for "All Resources" => sub {
 			is($call->[1]->method, 'DELETE');
 		};
 	};
+        describe "as_hashref" => sub {
+            it "deletes metadata's resource version" => sub {
+                $sut->metadata->{resourceVersion} = 'lolVersion';
+                is($sut->metadata->{resourceVersion}, 'lolVersion');
+                my $object_data = $sut->as_hashref;
+                ok(!exists($object_data->{metadata}{resourceVersion}));
+            };
+        };
 };
 
 shared_examples_for "Stateful Resources" => sub {
