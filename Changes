@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.0 Thu Apr 28 2016
+
   - Resource->as_hashref now returns a clone of the data.
 
 0.23 Mon Apr 18 2016
