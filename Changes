@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  - Resource factory now ensures 'kind' is populated
+
 1.0 Thu Apr 28 2016
 
   - Resource->as_hashref now returns a clone of the data.
