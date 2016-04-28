@@ -15,6 +15,7 @@ require Net::Kubernetes::Resource::ServiceAccount;
 sub create_resource_object {
 	my($self, $object, $kind) = @_;
 	$kind ||= $object->{kind};
+	$object->{kind} ||= $kind;
 	my(%create_args) = %$object;
 	$create_args{api_version} = $object->{apiVersion};
 	$create_args{username} = $self->username if($self->username);
