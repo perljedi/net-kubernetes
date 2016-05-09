@@ -7,13 +7,8 @@ use Test::Deep;
 use Test::Fatal qw(lives_ok dies_ok);
 use Net::Kubernetes;
 use MIME::Base64;
-use Test::Mock::Wrapper 0.17;
 
 describe "Net::Kubernetes - Authentication options" => sub {
-	my $lwpMock;
-	before sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
-	};
 	it "can be instantiated" => sub {
 		new_ok( 'Net::Kubernetes' )
 	};
@@ -34,7 +29,7 @@ describe "Net::Kubernetes - Authentication options" => sub {
 			my $req = $kube->create_request(GET => '/pods');
 			ok(defined $req->header('Authorization'));
 			is($req->header('Authorization'), "Bearer my_token_string");
-			
+
 		};
 		it "includes the token read from the provided file if path is given" => sub {
 			my $kube = Net::Kubernetes->new(token=>'./t/my_token.dat');
@@ -49,7 +44,7 @@ describe "Net::Kubernetes - Authentication options" => sub {
 			my $req = $kube->create_request(GET => '/pods');
 			ok(defined $req->header('Authorization'));
 			is($req->header('Authorization'), "Bearer this_was_read_from_a_file");
-			
+
 		};
 	};
 };

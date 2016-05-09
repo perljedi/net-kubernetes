@@ -8,7 +8,7 @@ use Test::Fatal qw(lives_ok dies_ok);
 use Net::Kubernetes;
 use Net::Kubernetes::Namespace;
 use MIME::Base64;
-use Test::Mock::Wrapper 0.17;
+use Jasmine::Spy qw(spyOn stopSpying expectSpy getCalls);
 use File::Temp qw/tempdir/;
 use File::Slurp qw/read_file/;
 use File::stat;
@@ -29,27 +29,29 @@ shared_examples_for "All Resources" => sub {
 	describe "update" => sub {
 		it "makes a PUT request" => sub {
 			$sut->update();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'PUT');
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			isa_ok($call->[0], 'HTTP::Request');
+			is($call->[0]->method, 'PUT');
 		};
 	};
 	describe "delete" => sub {
 		it "makes a DELETE request" => sub {
 			$sut->delete();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'DELETE');
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			isa_ok($call->[0], 'HTTP::Request');
+			is($call->[0]->method, 'DELETE');
 		};
 	};
-        describe "as_hashref" => sub {
-            it "deletes metadata's resource version" => sub {
-                $sut->metadata->{resourceVersion} = 'lolVersion';
-                is($sut->metadata->{resourceVersion}, 'lolVersion');
-                my $object_data = $sut->as_hashref;
-                ok(!exists($object_data->{metadata}{resourceVersion}));
-            };
-        };
+	describe "as_hashref" => sub {
+		it "deletes metadata's resource version" => sub {
+			$sut->metadata->{resourceVersion} = 'lolVersion';
+			is($sut->metadata->{resourceVersion}, 'lolVersion');
+			my $object_data = $sut->as_hashref;
+			ok(!exists($object_data->{metadata}{resourceVersion}));
+		};
+	};
 };
 
 shared_examples_for "Stateful Resources" => sub {
@@ -64,40 +66,42 @@ shared_examples_for "Stateful Resources" => sub {
 
 		it "makes a GET request to its selfLink" => sub {
 			$sut->refresh();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'GET');
-			ok(index($call->[1]->uri, $sut->metadata->{selfLink}) > 0);
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			isa_ok($call->[0], 'HTTP::Request');
+			is($call->[0]->method, 'GET');
+			ok(index($call->[0]->uri, $sut->metadata->{selfLink}) > 0);
 		};
 	};
 };
-
+#
 shared_examples_for "Pod Container" => sub {
 	it "can get a list of pods" => sub {
 		can_ok($sut, 'get_pods');
 	};
 	it "makes a get request" => sub {
 		$sut->get_pods();
-		my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-		isa_ok($call->[1], 'HTTP::Request');
-		is($call->[1]->method, 'GET');
+		expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+		my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+		isa_ok($call->[0], 'HTTP::Request');
+		is($call->[0]->method, 'GET');
 	};
 	it "Requests relative to its 'selfLink'" => sub {
 		$sut->get_pods();
-		my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-		isa_ok($call->[1], 'HTTP::Request');
-		like($call->[1]->uri, qr{/api/v1beta3/namespaces/default/pods});
+		expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+		my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+		isa_ok($call->[0], 'HTTP::Request');
+		like($call->[0]->uri, qr{/api/v1beta3/namespaces/default/pods});
 	};
 };
 
 describe "Net::Kubernetes - All Resource Objects" => sub {
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
 		$sut = Net::Kubernetes::Resource->new(metadata=>{selfLink=>'/api/v1beta3/namespaces/default/pods/myPod'}, status => {}, kind => "Pod", api_version =>"v1beta3");
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
@@ -105,15 +109,14 @@ describe "Net::Kubernetes - All Resource Objects" => sub {
 
 describe "Net::Kubernetes - Replication Controller Objects " => sub {
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "status":{}, "kind":"ReplicationController", "apiVersion":"v1beta3"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "status":{}, "kind":"ReplicationController", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_rc('myRc');
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
@@ -128,16 +131,14 @@ describe "Net::Kubernetes - Replication Controller Objects " => sub {
 
 describe "Net::Kubernetes - Pod Objects " => sub {
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->resetMocks;
-		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myPod$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}, "containers":[{}]}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}, "containers":[{}]}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/pods/myPod"}, "status":{}, "kind":"Pod", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_pod('myPod');
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
@@ -148,20 +149,25 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 			can_ok($sut, 'logs');
 		};
 		it "fetches logs from kubernetes on demand" => sub {
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{myPod/log$} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
 			$sut->logs();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'GET');
-			ok(index($call->[1]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			isa_ok($call->[0], 'HTTP::Request');
+			is($call->[0]->method, 'GET');
+			ok(index($call->[0]->uri, $sut->metadata->{selfLink}.'/log') > 0);
 		};
 		it "passes container name to kubernetes as a parameter if recieved" => sub {
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{myPod/log\?container=foo$} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, 'LOGS, LOGS, LOGS'));
+
 			$sut->logs(container=>'foo');
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			isa_ok($call->[1], 'HTTP::Request');
-			is($call->[1]->method, 'GET');
-			ok(index($call->[1]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			isa_ok($call->[0], 'HTTP::Request');
+			is($call->[0]->method, 'GET');
+			ok(index($call->[0]->uri, $sut->metadata->{selfLink}.'/log') > 0);
+			cmp_deeply({ $call->[0]->uri->query_form }, superhashof({container=>'foo'}))
 		};
 		it "throws client side exception if called on a multi-container pod without a container argument" => sub {
 			push @{ $sut->spec->{containers} }, {};
@@ -176,22 +182,20 @@ describe "Net::Kubernetes - Pod Objects " => sub {
 				fail("Should have thrown Net::Kunbernetes::Exception::ClientException, not '$e'");
 			}
 		};
-	}
+	};
 };
 
 describe "Net::Kubernetes - Node Objects " => sub {
 	my $kube;
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 		lives_ok {
 			$kube = Net::Kubernetes->new(url => 'http://localhost:8080', api_version => 'v1');
 		};
-		$lwpMock->resetMocks;
-		$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myNode$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
 		$sut = $kube->get_node('myNode');
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
@@ -202,44 +206,45 @@ describe "Net::Kubernetes - Node Objects " => sub {
 			can_ok($sut, 'get_pods');
 		};
 		it "gets a list of pods from kubernetes on demand" => sub {
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$sut->get_pods();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			cmp_deeply({ $call->[0]->uri->query_form }, superhashof({fieldSelector=>ignore}))
 		};
 		it "uses nodeName for v1 api" => sub {
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$sut->get_pods();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			ok($call->[1]->uri =~ m/nodeName/);
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			ok($call->[0]->uri =~ m/nodeName/);
 		};
 		it "uses host for v1beta3 api" => sub {
-			$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 			lives_ok {
 				$kube = Net::Kubernetes->new(url => 'http://localhost:8080', api_version => 'v1');
 			};
-			$lwpMock->resetMocks;
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m/myNode$/ ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{"externalId":"172.18.8.102"}, "metadata":{"selfLink":"/api/v1beta3/nodes/myNode", "name":"myNode"}, "status":{}, "kind":"Node", "apiVersion":"v1"}'));
 			$sut = $kube->get_node('myNode');
-			$lwpMock->resetCalls;
-			$lwpMock->addMock('request')->with(code(sub{my($mo,$re) = @{$_[0]}; return $re->uri =~ m{pods\?fieldSelector} ? 1 : 0;}))->returns(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
+			getCalls('LWP::UserAgent', 'request')->reset;
+			spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"status":"ok", "apiVersion":"v1beta3", "items":[{"spec":{}, "metadata":{"selfLink":"/path/to/me"}, "status":{}}]}'));
 			$sut->get_pods();
-			my($call) = $lwpMock->verify('request')->once->getCalls->[0];
-			ok($call->[1]->uri =~ m/host/);
+			expectSpy('LWP::UserAgent', 'request')->toHaveBeenCalled->once;
+			my($call) = getCalls('LWP::UserAgent', 'request')->mostRecent;
+			ok($call->[0]->uri =~ m/host/);
 		}
 	};
 };
 
 describe "Net::Kubernetes - Secret Objects " => sub {
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"type":"opaque", "data":{ "readme": "VGVzdCBmaWxlIGZvciBOZXQ6Okt1YmVybmV0ZXMgdGVzdHMuICBUaGlzIGdldHMgY3JlYXRlZCB3aGVuIHRlc3RpbmcgdGhlCk5ldDo6S3ViZXJuZXRlczo6UmVzb3VyY2U6OlNlY3JldC0+cmVuZGVyIG1ldGhvZCwgYW5kIGlzIHVzZWQgdG8gY29uZmlybSB0aGF0Cml0IHdhcyB3cml0dGVuIG91dCBjb3JyZWN0bHkuCgpJdCBjYW4gYmUgc2FmZWx5IGRlbGV0ZWQuICBZb3Ugc2hvdWxkbid0IGV2ZXIgc2VlIGl0LCBhY3R1YWxseS4K", "super-secret-app-password": "Q2FyZXNzIG9mIFN0ZWVsCg==" }, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Secret", "apiVersion":"v1beta3"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"type":"opaque", "data":{ "readme": "VGVzdCBmaWxlIGZvciBOZXQ6Okt1YmVybmV0ZXMgdGVzdHMuICBUaGlzIGdldHMgY3JlYXRlZCB3aGVuIHRlc3RpbmcgdGhlCk5ldDo6S3ViZXJuZXRlczo6UmVzb3VyY2U6OlNlY3JldC0+cmVuZGVyIG1ldGhvZCwgYW5kIGlzIHVzZWQgdG8gY29uZmlybSB0aGF0Cml0IHdhcyB3cml0dGVuIG91dCBjb3JyZWN0bHkuCgpJdCBjYW4gYmUgc2FmZWx5IGRlbGV0ZWQuICBZb3Ugc2hvdWxkbid0IGV2ZXIgc2VlIGl0LCBhY3R1YWxseS4K", "super-secret-app-password": "Q2FyZXNzIG9mIFN0ZWVsCg==" }, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Secret", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_rc('mySecret');
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
@@ -270,15 +275,14 @@ describe "Net::Kubernetes - Secret Objects " => sub {
 
 describe "Net::Kubernetes - Service Objects " => sub {
 	before all => sub {
-		$lwpMock = Test::Mock::Wrapper->new('LWP::UserAgent');
 		lives_ok {
 			$ns = Net::Kubernetes::Namespace->new(base_path=>'/api/v1beta3/namespaces/default');
 		};
-		$lwpMock->addMock('request')->returns(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "status":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Service", "apiVersion":"v1beta3"}'));
+		spyOn('LWP::UserAgent', 'request')->andReturn(HTTP::Response->new(200, "ok", undef, '{"spec":{"selector":{"name":"myReplicates"}}, "status":{}, "metadata":{"selfLink":"/api/v1beta3/namespaces/default/replicationcontrollers/myRc"}, "kind":"Service", "apiVersion":"v1beta3"}'));
 		$sut = $ns->get_service('myService');
 	};
 	before sub {
-		$lwpMock->resetCalls;
+		getCalls('LWP::UserAgent', 'request')->reset;
 	};
 
 	it_should_behave_like "All Resources";
