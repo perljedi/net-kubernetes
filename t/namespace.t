@@ -8,7 +8,7 @@ use Test::Fatal qw(lives_ok dies_ok);
 use Net::Kubernetes;
 use Net::Kubernetes::Namespace;
 use MIME::Base64;
-use Test::Mock::Wrapper 0.17;
+use Test::Mock::Wrapper 0.18;
 use vars qw($lwpMock $sut);
 
 
@@ -29,7 +29,7 @@ describe "Net::Kubernetes - Namespace" => sub {
 	it_should_behave_like "Replication Controller Lister";
 	it_should_behave_like "Service Lister";
 	it_should_behave_like "Secret Lister";
-	
+
 	describe "get_pod" => sub {
 		it "throws an exception if not given a pod name" => sub {
 			dies_ok { $sut->get_pod();   };
