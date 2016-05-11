@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+ 
+  - Update dependency on Test::Mock::Wrapper to avoid bug in perl 5.24
 
 1.01 Thu Apr 28 2016
 
