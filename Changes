@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  - Bug fix for boolean values passed to kubernetes via json.
+
 1.02 Wed May 11 2016
  
   - Update dependency on Test::Mock::Wrapper to avoid bug in perl 5.24
