@@ -61,7 +61,8 @@ sub create {
 	# true or false. This is not JSON's fault, but I'm not
 	# sure just now how I want to solve it.
 	my $content = $self->json->encode($object);
-	$content =~ s/(["'])(true|false)\1/$2/g;
+	my $validBooleanProperties = qr/readOnly(?:RootFilesystem)?|hostNetwork|hostPID|hostIPC|stdin(?:Once)?|tty|runAsNonRoot|privileged|ready|unschedulable/;
+	$content =~ s/((["'])(?:$validBooleanProperties)\2:\s)(["'])(true|false)\3/$1$4/g;
 	# /EndHack
     my $req = $self->create_request(POST=>$self->path.'/'.lc($object->{kind}).'s', undef, $content);
 	my $res = $self->ua->request($req);
